@@ -1,0 +1,32 @@
+A Cool jQuery Plugin - FastConfirm
+
+I was working on the <a href="http://engage.cfobjective.com/" target="_blank">Engage app</a> for <a href="http://www.cfobjective.com/" target="_blank">cf.Objective()</a> 
+and I wanted to quickly add a confirmation dialog to the <em>delete<em> link for proposals. Now I'm not a particularly advanced jQuery developer,
+but I do know that there are a lot of people out there who are, and many of them have written plugins to help us lazier folks get things done. 
+Through the power of Google I found a <a href="http://plugins.jquery.com/plugin-tags/confirm" target="_blank">jQuery Plugins Page</a> 
+that lists all plugins that have been tagged with the term <em>confirm</em>. Wanting something quick and easy, I was drawn to one called 
+<em><a href="http://plugins.jquery.com/project/fastconfirm" target="_blank">Fast Confirm</a></em>.</p>
+<p>I checked out the <a href="http://blog.pierrejeanparra.com/jquery-plugins/fast-confirm/demonstration/" target="_blank">demo</a> and read through the 
+<a href="http://blog.pierrejeanparra.com/jquery-plugins/fast-confirm/documentation/" target="_blank">docs</a>, 
+then saw some comments on the bottom of the docs page that suggested precisely how to implement the plugin
+for my exact use case. Within 10 minutes I had my confirmation dialog up and running!  Here's the code:
+<code><link type="text/css" href="/css/jquery.fastconfirm.css" rel="stylesheet" />
+<script type="text/javascript" src="/js/jquery.fastconfirm.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$(".confirm").click(function() {
+			$(this).fastConfirm({
+				position: "right",
+				onProceed: function(trigger) {
+					window.location.href=$(trigger).attr("href");
+				},
+				onCancel: function(trigger) {
+				}
+			});
+			return false;
+		});
+	});
+</script></code></p>
+<p>With the above script on my page, all I have to do is add a class of <em>confirm</em> to any anchor tag and I'll get a confirmation dialog whenever the anchor is clicked.</p>
+<p>The plugin does allow you to change the question asked in the dialog, as well as a number of other options, but I was happy to accept the default of "Are you sure?".
+I think this is a great, simple plugin. Kudos to <a href="http://blog.pierrejeanparra.com/about/" target="_blank">Pierre-Jean Parra</a> for writing it and contributing it to the community.</p>

@@ -1,0 +1,14 @@
+Using Git Rebase to Squash Commits - Revisited
+
+I wrote a blog post awhile back about <a href="http://www.silverwareconsulting.com/index.cfm/2010/6/6/Using-Git-Rebase-to-Squash-Commits">using Git rebase</a> to squash a bunch of small commits into a single commit.
+I really like this approach as it allows me to commit frequently without having to litter my public repo with lots of meaningless commits. 
+I've recently been researching Git workflows, trying to come up with a workflow for contributors to <a href="http://www.validatethis.org" target="_blank">ValidateThis</a>, 
+and noticed that there's an easier way to start a rebase for all commits in a branch, which is generally what I need to rebase.</p>
+<p>When I start working on a new feature, or even a bug fix, I generally start a new branch for it: <code>git checkout -b newBranch</code></p>
+<p>I then make my changes, committing frequently. When I'm ready to merge my changes back into the <em>master</em> branch I don't want all of those small, meaningless
+commits showing up, so I use <em>get rebase</em> to squash them. In the pervious article I discussed how I'd use <em>git log</em> to determine how many commits
+I wanted to rebase and then use <em>git rebase -i HEAD~n</em>, where <em>n</em> is the number of commits that I want to rebase. This is a useful feature if your
+commits are already in your <em>master</em> branch, but if all you want to do is rebase all of the commits in the current branch (<em>newBranch</em> in this example),
+then you can simply do: <code>git rebase -i master</code></p>
+<p>Which tells Git to rebase all of the commits in the current branch that are not already in <em>master</em>. After issuing that command you can follow the steps
+as described in the <a href="http://www.silverwareconsulting.com/index.cfm/2010/6/6/Using-Git-Rebase-to-Squash-Commits">previous article</a> to choose which ones to squash and then to create a new commit message.</p>

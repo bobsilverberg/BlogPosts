@@ -1,0 +1,72 @@
+Sending Push Notifications to an iPhone from ColdFusion
+
+<a href="http://notifo.com/" target="_blank">Notifo</a> is a relatively new service available which allows you to send push notifications to mobile clients
+via a REST interface. Currently notifications can only be sent to the iPhone, but they plan to add support for Android and Blackberry in the future.
+Because it is based on a <a href="https://api.notifo.com/" target="_blank">REST API</a>, it's very easy to interact with from a ColdFusion application, 
+and I wanted to give it a try, so I whipped up
+a quick <a href="http://github.com/bobsilverberg/CFNotifo" target="_blank">API wrapper</a> for it. 
+It all seems to work extraordinarily well, and is quite cool.</p>
+<h3>CFNotifo is Born</h3>
+I found out about Notifo from the <a href="http://github.com/blog" target="_blank">GitHub blog</a>, 
+which describes a <a href="http://github.com/blog/664-notifo-service-hook-added" target="_blank">Notifo service hook</a> that was just added. This
+service hook allows you to receive push notifications on your iPhone any time someone commits to your Git repo. Of course I had to try this right away,
+and was duly impressed. The next step was to write some CFML that interacts with the API, so, as I mentioned above, I decided to create a simple API 
+wrapper to make it even easier for others to do the same. In a matter of minutes I was able to create a single cfc which implements all of the current API.
+This wasn't that challenging as there are only two API methods right now, <em>subscribe_user</em> and <em>send_notification</em>, but as Notifo adds more, 
+I will follow suit.</p>
+<h3>How Does Notifo Work</h3>
+<a href="http://paulstamatiou.com/" target="_blank">Paul Stamatiou</a>, co-founder of Notifo, wrote up a <a href="http://paulstamatiou.com/notifo-yc-w2010-gets-a-co-founder-me" target="_blank">detailed post about Notifo</a> on his blog,
+which is well worth reading. If you don't feel like following the link, here are the highlights:
+<ul>
+	<li>Allows you to send push notifications to a mobile client from a server.</li>
+	<li>Currently iPhone is supported, via an <a href="http://itunes.apple.com/us/app/notifo/id359063459" target="_blank">app</a> available in the app store. Android is up next, with other smartphones to be added in the future.</li>
+	<li>To subscribe to services you need a Notifo account, which can be set up via the <a href="https://notifo.com/user/register" target="_blank">Notifo site</a>, or via the iPhone app.</li>	
+	<li>To receive notifications you need to have the iPhone app installed.</li>	
+	<li>Once you've subscribed to a service you can set various options for it via a web interface, including what type of notifications you want to receive 
+	(normal, silent and stealth), and you can unsubscribe, block and report spam on a service.</li>	
+	<li>You can also set some global options for notifications, such as <em>silent hours</em>, during which notifications will be sent silently.</li>	
+</ul>
+</p>
+<h3>How to Use CFNotifo</h3>
+<p>The API wrapper that I wrote is extremely simple to use. You just instantiate an object, passing in the credentials for your service, and then call the 
+<em>subscribe</em> and/or <em>send</em> methods on that object.  Here are a couple of examples:
+<code>// Subscribe a user to a service
+CFNotifo = createObject("component","CFNotifo").init(username="serviceNotifoUsername",apiSecret="serviceAPISecret");
+response = CFNotifo.subscribe(username="userToSubscribe");
+if (response.success)
+{
+	// It worked!
+} else 
+{
+	// Something went wrong
+	writeDump(var=response.notifoResponse, label="Notifo's Response");
+}
+
+// Send a notification
+CFNotifo = createObject("component","CFNotifo").init(username="serviceNotifoUsername",apiSecret="serviceAPISecret");
+response = CFNotifo.send(to="subscribedUser", msg="Message to send");
+if (response.success)
+{
+	// It worked!
+} else 
+{
+	// Something went wrong
+	writeDump(var=response.notifoResponse, label="Notifo's Response");
+}</code></p>
+<h3>A Working Demo</h3>
+<p>If you want to see CFNotifo in action, you can visit my <a href="http://www.silverwareconsulting.com/CFNotifo.cfm" target="_blank">CFNotifo demo page</a>.
+This will allow you to subscribe to a service that I created using CFNotifo. As mentioned above, you'll need a Notifo account to be able to subscribe, and
+the iPhone app to receive mobile notifications (you can also see all of your notifications via Notifo's web interface if you don't have an iPhone or don't
+want to install the app). Once everything is in place, you'll receive a push notification whenever I add a new post to my blog.</p>
+<p>As I was writing up this post I realized that the demo I just described isn't that useful as a demo as you won't see any actual notifications until I post
+a new article, so I've added a new demo service that you can use to force a notification to be sent. Simply use demo 2 to subscribe to the <em>Test Service</em>, and then
+use the next form to send yourself a notification.</p>
+<h3>What's Next?</h3>
+<p>The complete Notifo API has been implemented in CFNotifo, but Notifo also offers <a href="https://api.notifo.com/docs/webhooks" target="_blank">Webhooks</a>, 
+which allow you to configure a URL to be hit whenever a notification is sent to your account. I plan to add support for creating your own webhooks to the next
+version of CFNotifo.</p>
+<p>CFNotifo is hosted on <a href="http://github.com/bobsilverberg/CFNotifo" target="_blank">GitHub</a> and <a href="http://cfnotifo.riaforge.org/" target="_blank">RIAForge</a>,
+from whence you can download the code.
+I'm also very pleased that CFNotifo has been included in the <a href="http://github.com/notifo/Notifo-API-Libraries" target="_blank">official repo for Notifo APIs on GitHub</a>. 
+If you have any questions or suggestions you can comment on this post, and any issues you encounter can be added to the 
+<a href="http://github.com/bobsilverberg/CFNotifo/issues" target="_blank">issue tracker</a> at GitHub.</p>

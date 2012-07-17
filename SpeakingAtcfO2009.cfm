@@ -1,0 +1,12 @@
+I'll Be Presenting at cf.Objective() in May
+
+<p>When I started blogging seriously, around 9 months ago, I had my reasons.  I wanted to give something back to the ColdFusion community, from which I had received so much.  I wanted to learn about new and interesting ideas and techniques, and quickly discovered that the best way to learn about something is to attempt to write about it.  I wanted to solicit feedback for my ideas so that I could verify and improve upon them.  And I had one goal.</p>
+<p>I had just returned from <a href="http://www.cfobjective.com/" target="_blank">cf.Objective()</a> and had had the time of my life (OK, maybe that's exaggerating a bit).  I had attended excellent presentations during which I learned a lot of new and useful things.  But more importantly, I had a chance to meet and mingle with some of the nicest and smartest ColdFusion developers one could ever hope to meet.  I made some friends, had some very enlightening conversations, and drank a beer or two as well.  There was no doubt in my mind that I'd be returning year after year.  In my mind it was <em>the</em> ColdFusion Conference to attend.</p>
+<p>Having a background in training, and enjoying the challenge of teaching people, I thought to myself, "Self, wouldn't it be cool to <em>present</em> at cf.Objective()?"  So that became my goal.  It didn't have to be next year - it could be two or three years down the road, but my goal was to eventually speak at a cf.Objective() Conference.</p>
+<p>So you can imagine how pleased I was to hear back from the cf.Objective() Steering Committee yesterday that they had accepted two of the topics that I submitted for their approval.  I am delighted to announce that I will be presenting the following sessions at cf.Objective(), in May:
+<ul>
+	<li>An Object Oriented Approach to Validations</li>
+	<li>Building an Object Oriented Model</li>
+</ul>
+</p>
+<p>I'll undoubtedly provide more details on those sessions in the future, and I'm sure that a summary will appear on the <a href="http://www.cfobjective.com/sessions.cfm" target="_blank">sessions page</a> in the not too distant future as well.  In addition to achieving my personal goal, I am honoured to be among the <a href="http://www.cfobjective.com/speakers.cfm" target="_blank">group of speakers</a> whose ranks are filled with those whose work I greatly respect.  I strongly encourage anyone reading this to make an effort to attend.  In my opinion it is truly the best ColdFusion conference available.</p>

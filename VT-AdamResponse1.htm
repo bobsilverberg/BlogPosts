@@ -1,0 +1,55 @@
+Hi Adam,
+
+Thanks for deflowering the group ;-)
+
+You have raised a few interesting points which I think I understand, but I want to be sure.  Let me sum up what I think you're saying/asking, and then you can let me know if I've got it:
+
+1. Creating 220 xml files is a pain in the a$$
+
+I agree, and it's something I've thought about.  It's definitely possible to create a template for Illudium (I was thinking of doing that myself) which would at least create a starting point, including all of the properties, and which you could then edit.  One could also fairly easily create a routine that would do that for the entire database in one fell swoop, as opposed to manually doing each object via Illudium.  I think I would definitely go one of those routes if I were to implement this with a large model.
+
+If you do go ahead and create something for Illudium let me know, as I'll include it with the framework (with your permission, of course).
+
+2. A lot of your business objects have a "pretty predictable validation 'standard'... with a few special case objects".
+
+This is the one I _think_ I understand, but am looking for clarification.
+
+I am assuming that you mean something like:
+
+UserType Object
+Property: Name (required)
+Property: Description (required)
+
+OrderType Object
+Property: Name (required)
+Property: Description (required)
+
+etc.
+
+So you'd like a way to say "For all of my model objects, make the Name property and the Description property required."  Am I getting that right?  Or perhaps you're saying, "For all of my model objects, for which I have not explicitly created validation rules, make the Name property and the Description property required."
+
+I can see a couple of ways of dealing with that, both of which I believe you mentioned in your note:
+
+1. Deal with it via code generation.
+
+Create a code generator and build some "smarts" into it.  So it wouldn't just spit out a validations.xml file with a base set of properties but without any validation rules.  Rather it would include validation rules based on a set of rules that you predefine (e.g., all Name properties are required).  It may be possible to do this via Illudium templates, but I don't know if one can build those "smarts" in (having never written an Illudium template before).
+
+2. Have the framework allow you to create "default" validation rules.
+
+At a high level the idea would be to allow you to define some validation rules, just as you can do it now for individual objects, but these rules would be applied to all objects.
+
+I really like this idea, and think that there is definitely a place for it in the framework.  The question is just how complicated it needs to be.
+
+If it would be as simple as the above example, where each object actually has the same property names, then it's a no-brainer.  But I imagine that wouldn't address many use cases.  I can see it needing to utilize some pattern matching, so that your UserType object could have a UserTypeName and your OrderType object could have an OrderTypeName, but you could still define one default rule to address both of those.  That would probably require some metadata somewhere to indicate what the prefix is, unless the prefix were the same as your transfer class name (which may not be so far fetched).
+
+There's the issue of whether these default rules are only used in cases where specific rules do not exist (i.e. there is no xml file defined for the object), or whether they are used in all cases.  The latter could be more useful but then raises the issue of how to override rules that you don't want to exist.  For example, my default says that Name is always required, but in _this_ object I don't want it to be required.  How would one specify an un-rule (if you follow).  I guess this would best be addressed by adopting the former approach - that default rules are only used when no specific rules are available.
+
+This also makes me think of the ability to inherit rules.  One might want to create a set of "parent" rules which then apply to a set of children.  I suppose that could be addressed by allowing for some sort of <include> in the validations.xml (similar to what Transfer does).
+
+The above thoughts are based on the assumption that these default rules would be defined in xml, but a different approach could be taken.  I've already included an API which allows a developer to define their validation rules in CF code, rather than xml, so that approach could also be taken with the default rules.  In fact, it might be easier to implement, as everything could be controlled via code.  But, I considering that I'm assuming that the majority of developers would use xml to define their validation rules, I wouldn't want to force them to use CF code to define default rules.
+
+I can see how the above ideas could be useful additions to the framework, but also how they could make things more complicated.  One of my goals, although it wasn't explicitly stated, was to keep things simple from the developer perspective, so I'm not sure where to go with some of these.
+
+Adam, what do you think?  Have I even addressed your issue(s)?  If so, do any of the above suggestions sound like they would address your use cases?  Could you give me a few specific examples of "predictable validation standards"?
+
+Does anyone else have anything to add to the discussion?

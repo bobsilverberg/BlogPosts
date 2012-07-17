@@ -1,0 +1,152 @@
+A Git Workflow for Collaboration on Open Source Projects
+
+As some of you may know, I'm the lead developer on an open source project called <a href="http://www.validatethis.org" target="_blank">ValidateThis</a>.
+I changed the version control software that I'm using for the project from Subversion to Git almost a year ago, and I've been very happy with Git ever since.
+There was a bit of a learning curve to Git, particularly as I'd never really used the command line much, and it's pretty much required with Git, but that
+was actually one of the reasons for the switch - to give me the impetus to really learn how to work with Git.</p>
+<p>I am lucky enough to have several contributors to the project, and they made me aware recently that the fact that the source is housed in a Git 
+repository is interfering with their ability to make contributions. They all have plenty of experience working with Subversion, but Git is quite new to most of
+them. Simply learning the syntax of Git is no problem, but what many people find difficult, me included, is figuring out how to change their workflow, as 
+working with Git can be quite different from working with Subversion. So I decided to do some research and try to come up with a proposal for a workflow for
+all of the contributors. We're going to give it a try and see how well it goes. If changes need to be made, we'll make them. 
+My hope is that the workflow we devise is one that can be used by other open source projects as well, if they choose to do so.</p>
+<p>The remainder of this post will be devoted to describing the workflow in as much detail as possible, but I'd like to start with some credit. The overall
+workflow is based on one published by <a href="http://nvie.com/about" target="_blank">Vincent Driessen</a> on 
+<a href="http://nvie.com/" target="_blank">his blog</a> in a post titled <a href="http://nvie.com/git-model" target="_blank"><em>A successful Git branching model</em></a>.
+I read a number of excellent posts about Git workflows as I was researching this, and if you'd like to educate yourself before going further here are some links:
+<ul>
+	<li><a href="http://reinh.com/blog/2009/03/02/a-git-workflow-for-agile-teams.html" target="_blank"><em>A Git Workflow for Agile Teams</em></a> by <a href="http://reinh.com/" target="_blank">Rein Henrichs</a></li>
+	<li><a href="http://yehudakatz.com/2010/05/13/common-git-workflows/" target="_blank"><em>My Common Git Workflow</em></a> by <a href="http://yehudakatz.com/" target="_blank">Yehuda Katz</a></li>
+	<li><a href="http://osteele.com/archives/2008/05/my-git-workflow" target="_blank"><em>My Git Workflow</em></a> by <a href="http://osteele.com/" target="_blank">Oliver Steele</a></li>
+	<li><a href="http://tomayko.com/writings/the-thing-about-git" target="_blank"><em>The Thing About Git</em></a> by <a href="http://tomayko.com/about" target="_blank">Ryan Tomayko</a></li>
+	<li><a href="http://brandonkonkle.com/blog/2010/apr/28/our-git-workflow/" target="_blank"><em>Our Git Workflow</em> by <a href="http://brandonkonkle.com/about/" target="_blank">Brandon Konkle</a></a></li>
+</ul></p>
+<p>Each of those posts addresses different issues, some of them having to do with collaboration, some having to do with how you work locally, and a lot of talk about rebasing.
+Some of the posts are a bit lengthy, but I do encourage you to read through them if you want to get a good idea of some of the issues that people have thought 
+about when trying to come up with a Git workflow.</p>
+<h3>It's based on Vincent Driessen's workflow</h3>
+<p>Even if you choose not to read any of the posts that I've listed above, I'm afraid you're going to have to read through <a href="http://nvie.com/git-model" target="_blank">Vincent Driessen's post</a>
+as it forms the basis of this workflow. I don't think it would be fair for me to simply repeat all of the information from Vincent's blog, so the remainder of this
+post is going to assume you're familiar with Vincent's workflow.</p>
+<h3>It uses GitHub</h3>
+<p>There is no reason why you have to use <a href="http://github.com/" target="_blank">GitHub</a> for your remotes when implementing a similar workflow but, because I <em>am</em> using GitHub, the instructions 
+below will use terms and screen caps from GitHub, and will be based on some of GitHub's features, including the brand spanking 
+new <a href="http://github.com/blog/712-pull-requests-2-0" target="_blank">pull request system</a>.</p>
+<h3>Getting started</h3>
+<p>In order to make use of this workflow you'll need to have Git installed on your machine, you'll need a GitHub account, and you'll need to configure your
+machine to talk to GitHub. I wrote a <a href="http://www.silverwareconsulting.com/index.cfm/2009/10/26/Setting-up-a-Mac-to-Work-with-Git-and-GitHub">blog post covering those topics</a>, for folks on OS X, awhile back.
+If you are on another OS there are plenty of resources available.</p>
+<p>This post assumes that you're starting from scratch, so the first thing you'll need to do is create a fork of the main project repo on GitHub.</p> 
+<h3>Create a fork</h3>
+<p>
+For the purposes of this post I'll be using the repo for ValidateThis, so go to the main GitHub repo for ValidateThis, which happens to be <em>my</em> repo,
+and is located at <a href="http://github.com/bobsilverberg/ValidateThis" target="_blank">http://github.com/bobsilverberg/ValidateThis</a>. Click the 
+fork button which you'll see near the upper right-hand corner of the screen:
+<img src="" />
+You'll see a message similar to this, telling you that GitHub is creating a fork of the repo just for you:
+<img src="" />
+Once the fork has been created you'll be taken to the repo page for your fork of the ValidateThis repo.
+</p>
+<h3>Clone the fork to your machine</h3>
+<p>You're going to do all of your work on your local machine, so you need a copy of the Git repo on your machine. You can accomplish this via the <em>git clone</em> command,
+and GitHub makes this very simple by providing you with a button that copies the location required for the clone command to your clipboard. Locate this button, which will look something like this:
+<img src="" />
+Make sure that <em>SSH</em> is chosen for the protocol (the location should start with "git@github.com:"), and click on the wee clipboard button.
+Pop open a terminal window and change to the folder into which you wish to place the Git repo, then enter the command: <em>git clone </em> and paste the contents of
+the clipboard. You should see a command like: <code>git clone git@github.com:ValidateThis/ValidateThis.git</code></p>
+<p>After issuing the command you should see a message similar to:<code>Cloning into ValidateThis...
+remote: Counting objects: 2457, done.
+remote: Compressing objects: 100% (579/579), done.
+remote: Total 2457 (delta 1848), reused 2457 (delta 1848)
+Receiving objects: 100% (2457/2457), 2.25 MiB | 571 KiB/s, done.
+Resolving deltas: 100% (1848/1848), done.</code></p>
+<p>You now have a clone of your own fork of the ValidateThis repo on your machine, located in a folder called <em>ValidateThis</em> 
+which is inside the folder from which you issued that command. This is where you will make all of your local changes.
+Switch to that folder now by issuing the command: <code>cd ValidateThis</code></p>
+<p>Take a look at the branches in the repo by issuing the command: <code>git branch</code></p>
+<p>You should see something like:<code>* master</code></p>
+<p>This tells you that your local repo has one branch, called master. But wait a minute, if you read the <a href="http://nvie.com/git-model" target="_blank">post by Vincent Driessen</a> 
+(like you were supposed to), you'd know that any changes that you make while developing should be committed to the <em>develop</em> branch, not the
+<em>master</em> branch, so where is the develop branch?</p>
+<h3>Create a develop tracking branch</h3>
+<p>Try issuing the command: <code>git branch -a</code></p> 
+<p>You should see something like:<code>* master
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/develop
+  remotes/origin/master</code></p>
+<p>This tells you that, in addition to your local <em>master</em> branch, your repo knows about two remote branches: <em>origin/develop</em> and <em>origin/master</em>.
+<em>origin</em> is the name for the remote that was automatically added for the local repo when you issued the <em>git clone</em> command. 
+<em>origin</em> is <em>your fork</em> of the ValidateThis repo. That is the remote to which you will push all of your code changes, therefore you need to set up
+a <em>tracking branch</em> in your local repo to correspond to the <em>develop</em> branch on the <em>origin</em> remote. You can do so by issuing the following
+command: <code>git checkout -b develop origin/develop</code></p>
+<p>After issuing that command you should see the following messages:<code>Branch develop set up to track remote branch develop from origin.
+Switched to a new branch 'develop'</code></p>
+<p>You now have a local branch called develop to which you can commit changes. 
+There's still one piece of the puzzle missing: you need to be able to pull changes from the main ValidateThis repo to keep your repo in sync with the project.</p>
+<h3>Add a remote for the main project repo</h3>
+<p>The main repo is not your fork, it's the repo that you originally forked, the one located at http://github.com/bobsilverberg/ValidateThis.
+In order to be able to pull changes from this repo you need to add it as a remote, which you can do by issuing this command: <code>git remote add main git://github.com/bobsilverberg/ValidateThis.git</code></p>
+<p>This will add it as a remote named <em>main</em>, so you now have two remotes added to your repo: <em>origin</em>, which is your fork on GitHub, and
+<em>main</em>, which is the main project repo on Github - the one you forked. You can see this by issuing the command: <code>git remote -v</code></p>
+<p>Which should result in something like:<code>main    git://github.com/bobsilverberg/ValidateThis.git (fetch)
+main    git://github.com/bobsilverberg/ValidateThis.git (push)
+origin  git@github.com:ValidateThis/ValidateThis.git (fetch)
+origin  git@github.com:ValidateThis/ValidateThis.git (push)</code></p>
+<h3>Make some code changes</h3>
+<p>OK, so now your local repo is all set up and ready to go. Let's say you want to add a feature to the project. The first step is to create a branch for your changes.</p>
+<p><strong>Rule #1 - All Changes Should Be Made in a Branch</strong></p>
+<p>That's right. Never make changes directly in the <em>develop</em> branch, and never, ever, touch the <em>master</em> branch.</p>
+<p>Therefore you'll create a new branch for our feature. Let's call it <em>newFeature</em> and create it by issuing the command: <code>git checkout -b newFeature</code></p>
+<p>
+<p>As you are developing, you want to try to keep your <em>develop</em> branch up to date with the main repo's <em>develop</em> branch to minimize the possibilty of merge conflicts later.
+You can do this by pulling that lastest changes from the main repo's <em>develop</em> branch using the following command: <code>git pull main develop</code></p>
+<p>Note that that <em>pull</em> command should be issued from within your own <em>develop</em> branch, so a common sequence of commands would be:<code>git checkout develop
+git pull main develop</code></p>
+
+	
+	
+
+
+Notes:
+
+To place your branch's new commits after the changes on the remote either:
+
+1.
+in branch:
+git fetch main develop
+git rebase main/develop
+
+2. in branch:
+git pull --rebase main develop   ???
+
+
+To do an interactive rebase of your branch to squash it:
+
+in branch:
+git rebase -i main/develop
+
+To merge the changes from branch into develop:
+
+1. in develop: get rebase branch
+or
+2. in develop: git merge branch
+
+- ??? not sure about these
+
+Another idea: use rebase to pull changes into a topic branch, use merge to merge branches back into develop
+
+- always use git pull to bring main/develop into your local develop
+-- this should be fine as you'll never have changes in develop - they will always be in a branch
+-- perhaps use git pull --rebase to bring changes directly into a topic branch, but I just had all kinds of problems with that today
+
+Final:
+in develop: git pull main develop
+in branch: git rebase develop
+
+OR
+
+in branch: git pull --rebase main develop  ***** caused a merge conflict!
+
+
+
+

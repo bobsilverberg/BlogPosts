@@ -1,0 +1,111 @@
+On Mon, Nov 10, 2008 at 1:14 PM, adam drew <epner81@gmail.com> wrote:
+> Sorry, I submitted that last message permaturly. so that wasn't entierly
+> what i was going to say, but you got my point.
+> I don't mind having the one big file so long as i can <include> what i need
+> when i need it where i need it .. I do this with coldspring and transfer
+> anyways.
+>
+
+Cool.  I'll just dig into Transfer and steal the code I need to manage the <inlcudes> ;-)
+
+> My concerns now are:
+>
+> how do you/I define the global rules
+> how do you/i define the package rules
+> how do you/I define the object rules
+
+My first inclination is to make it simple, so each of those rule types would be defined exactly the way the current rules are defined.  You'd specify a property name and then create rules for that property.  This means that it would only work if all of the properties shared the same name.  So it would work for objects like:
+
+TankGroup Object
+Property: Title (required)
+Property: Description (required)
+
+TankType Object
+Property: Title (required)
+Property: Description (required)
+
+But wouldn't work for objects like:
+
+TankGroup Object
+Property: TankGroupTitle (required)
+Property: TankGroupDescription (required)
+
+TankType Object
+Property: TankTypeTitle (required)
+Property: TankTypeDescription (required)
+
+I can see how it would be nice to allow for the latter, so I need to seriously consider whether to attempt to bake that in from the beginning.  My inclination at this point is just to make the former work, and address the latter in a future update.  What do folks think about that?  
+
+In terms of overrides, I'm not sure how that should work.  Currently the concept of overrides wouldn't make any sense, as you can add as many rules to a property as you wish.  So package rules would just add to global rules and object rules would just add to package rules.  Perhaps you're now seeing where this can get complicated ;-)  I need to consider whether overrides are required, and if so how they should work.
+
+> How do you/I handle the descriptions, annotations, messages and results
+> text?
+
+Again, this would just work the way it currently works.  Propery descriptions would be defined at the property level, messages would be defined at the rule level.  This would be simple for the simple (i.e., former, above) approach but would obviously get more complicated for the more complex (i.e., latter, above) approach.  Overrides make sense at least for the property descriptions - you could define a global description for the "Name" property, for example, and could then define a different description for the "Name" property at the package and/or object level.  The more specific description would override the more general one.
+
+> What changes to the ValidateThis core do these "ideas" force..
+
+Not a heck of a lot.  The main changes would be to the pieces that read rules from the xml files and store those rules in BOValidators.  I'll need to consider how to deal with general rules that do not apply to the current object.  For example, I define a global "Name is required" rule, but in my Widget object there is no "Name" property.  Obviously it should just ignore the rule, but the question is how to implement that?  There are a number of ways that I can think of, so I just need to consider what would be the best design and also consider the performance implications.
+
+Other that those items I think the rest of the code would remain pretty much as is (hooray for OO design).  Obviously I haven't had time to put that much thought into it yet.
+
+> What mechnisims exist to allow for future/custom extensions... (Plugin
+> methodology)
+
+I'm not sure what you mean here.  Could you give me an example of what you're referring to?
+
+>
+> Some potential benifits I see are:
+>
+> Reduced metadata definitions due to the inherited rules?
+> Improved reusabiltity?
+> Improved extensibility?
+> Improved managablility.
+>
+
+Sounds good to me ;-)
+
+> For Follow Up:
+>
+> "Un-Ruling" an Inherited Rule..
+>
+> could you not just create an "isNull" or possibly use a "Custom" Validator
+> which does nothing or return TRUE. .. Allowing the Property in an object to
+> technically be "Un-Required".. so to say??..
+>
+
+I don't think that will work.  You can create multiple rules for one property, so just adding another rule would not negate an existing rule.  You couldn't use "custom" to do this - that's not how it works.  I think the best way to deal with this would be to add an attribute to the rule element that acts as a "cancel", so any rules that match that rule (and how to test for a match is yet another issue) would then be negated.  I really don't like this whole "negating" thing - I can see it becoming very confusing, but if it seldom needs to be used then perhaps it isn't such an issue.  I'll need to put more thought into this one.  Perhaps this is one of those "edge cases" that gets put on the back burner for now.
+
+> Then when you build the objects validation collection, could you do a
+> structAppend(globalRules,packageRules,true) and/or
+> structAppend(globalRules,objectRules,true)  or something similar to
+> overwrite the inherited rules with the ones defined for that object..  
+>
+> Without looking for a specific reference in your code for how you are
+> currently doing this (building the objects validation collection) ..
+> could/would that concept even apply.. ??
+
+Yes, sort of.  The code might not look exactly like that, but that is the general idea of how it would work.
+
+>
+> Regards,
+> Adam
+>
+> --~--~---------~--~----~------------~-------~--~----~
+> You received this message because you are subscribed to the Google Groups
+> "ValidateThis!" group.
+> To post to this group, send email to validatethis@googlegroups.com
+> To unsubscribe from this group, send email to
+> validatethis+unsubscribe@googlegroups.com
+> For more options, visit this group at
+> http://groups.google.ca/group/validatethis?hl=en
+> -~----------~----~----~----~------~----~------~--~---
+>
+>
+
+
+
+-- 
+Bob Silverberg
+www.silverwareconsulting.com
+

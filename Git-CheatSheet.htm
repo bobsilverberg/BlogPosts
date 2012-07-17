@@ -1,0 +1,81 @@
+I've been using Git for awhile, but I still use Subversion for most of my projects, so I seem to always come back to Git after a long break. Of course, by that time I've
+forgotten how to do certain things, so I thought I'd throw together a quick cheat sheet that I, and anyone else, can use as a reference. 
+I will continually update this post as I come up with new questions and answers.<more/>
+
+<h3>Creating repos</h3>
+	<p>Creating a local repo:
+	<ol>
+		<li>mkdir <em>myRepo</em></li>
+		<li>cd <em>myRepo</em></li>
+		<li>git init</li>
+	</ol></p>
+	<p>Creating a remote repo (at GitHub):
+	<ol>
+		<li>go to <a href="http://github.com/repositories/new" target="_blank">http://github.com/repositories/new</a></li>
+		<li>fill in the form and click <em>Create Repository</em></li>
+	</ol></p>
+<h3>Branching</h3>
+	<p>Create a new local branch:
+	<ol>
+		<li>git branch <em>branchName</em></li>
+	</ol></p>
+	<p>Switch to a local branch:
+	<ol>
+		<li>git checkout <em>branchName</em></li>
+	</ol></p>
+	<p>Create a new local branch and switch to it:
+	<ol>
+		<li>git checkout -b <em>branchName</em></li>
+	</ol></p>
+	<p>List all local branches:	
+	<ol>
+		<li>git branch</li>
+	</ol></p>
+	<p>List all remote branches:
+	<ol>
+		<li>git branch -r</li>
+	</ol></p>
+	<p>List all local and remote branches:
+	<ol>
+		<li>git branch -a</li>
+	</ol></p>
+	<p>Delete a local branch:
+	<ol>
+		<li>git branch -d <em>branchName</em></li>
+	</ol></p>
+	<p>Compare two branches:
+	<ol>
+		<li>git diff <em>branchA</em> <em>branchB</em></li>
+	</ol></p>
+<h3>Merging</h3>
+	<p>Merge branchA into BranchB, committing all changes:
+	<ol>
+		<li>git checkout <em>branchB</em></li>
+		<li>git merge <em>branchA</em></li>
+	</ol></p>
+	<p>Merge branchA into BranchB, without committing:
+	<ol>
+		<li>git checkout <em>branchB</em></li>
+		<li>git merge <em>branchA</em> --no-commit</li>
+	</ol></p>
+<h3>Working with remotes</h3>
+	<p>Add a remote:
+	<ol>
+		<li>git remote add <em>remoteName</em> <em>url</em> (e.g., git://github.com/bobsilverberg/ValidateThis.git)</li>
+	</ol></p>
+	<p>Add a new remote and track an existing branch:
+	<ol>
+		<li>git remote add --track <em>branchName</em> <em>remoteName</em> <em>url</em> (e.g., git://github.com/bobsilverberg/ValidateThis.git)</li>
+	</ol></p>
+	<p>Take an existing local branch and add it to a remote:
+	<ol>
+		<li>git push <em>remoteName</em> <em>branchName</em></li>
+	</ol></p>
+	<p>Create a working copy of a remote branch:
+	<ol>
+		<li>git checkout -b <em>branchName</em> <em>remoteName</em>/<em>branchName</em></li>
+	</ol></p>
+	<p>Delete a remote branch:
+	<ol>
+		<li>git push <em>remoteName</em> :<em>branchName</em> (notice the colon before the branch name)</li>
+	</ol></p>

@@ -1,0 +1,159 @@
+Getting Started with WebDriver
+
+A few weeks ago during <a href="http://groups.google.ca/group/mxunit/browse_thread/thread/88d9b33328fed9c5" target="_blank">MXUnit Office Hours</a>,
+<a href="http://blog.billshelton.me/" target="_blank">Bill Shelton</a> demonstrated using WebDriver to create functional tests in Java.
+It was a pretty cool demo and I meant to give it a whirl for a while, but only got around to doing it this weekend.  I had to refer
+back to the <a href="http://experts.na3.acrobat.com/p75397469/" target="_blank">recording of the session</a> a number of times,
+so I thought it would be worthwhile to document the steps to get a project
+up and running in Eclipse that uses WebDriver. Let's start with some background.</p>
+<h3>What is WebDriver?</h3>
+<p>WebDriver is a tool that allows you to write code, in a number of languages, that automates a browser and allows you to interrogate
+what is rendered by the browser. You can use these features to created automated tests of a web application.
+You may be familiar with a tool called Selenium, which does similar things, but works within the context of a web browser itself.
+The Selenium project and the WebDriver project are merging to create Selenium 2.0. That project is a work in progress, but there's 
+nothing to stop you from experimenting with WebDriver right now.</p>
+<p>For a bit more of an official definition, here's some info from the Selenium 2.0 and WebDriver page at SeleniumHQ:</p>
+<blockquote>
+	<p>
+		WebDriver is a tool for automating testing web applications, and in particular to verify that they work as expected.
+		It aims to provide a friendly API that’s easy to explore and understand, which will help make your tests easier to read and maintain.
+		It’s not tied to any particular test framework, so it can be used equally well with JUnit, TestNG or from a plain old “main” method.
+	</p>
+	<p>
+		WebDriver uses a different underlying framework from Selenium’s javascript Selenium-Core.
+		It also provides an alternative API with functionality not supported in Selenium-RC.
+		WebDriver does not depend on a javascript core embedded within the browser, therefore it is able to avoid some long-running Selenium limitations.
+	</p>
+	<p>
+		WebDriver’s goal is to provide an API that establishes
+		<ul>
+			<li>A well-designed standard programming interface for web-app testing.</li>
+			<li>Improved consistency between browsers.</li>
+			<li>Additional functionality addressing testing problems not well-supported in Selenium 1.0.</li>
+		</ul>
+	</p>
+</blockquote>
+<p>I hope to write a number of posts about working with WebDriver. This first post will be a quick guide to setting up an Eclipse project and getting WebDriver to
+interact with a web page. Let's get started.</p>
+<h3>Create a Java Project</h3>
+<p>We're going to be writing Java code to drive WebDriver, so the first thing we need is a new Java project. Before starting this investigation I had written a grand total
+of 0 lines of Java code in Eclipse, so I didn't have a clue where to start. Luckily, as I mentioned in the opening, Bill demonstrated all of the steps for us in his presentation
+during MXUnit Office Hours, so I was able to just copy his steps.
+<ol>
+	<li>Open Eclipse (or CFBuilder, which I'm sure you know <em>is</em> Eclipse).</li>
+	<li>From the menu choose <em>File</em>, <em>New</em>, <em>Project...</em></li>
+	<li>
+		In the folder <em>Java</em>, choose <em>Java Project</em>.
+		<p><img src="/images/webdriver-newproject0.5.jpg" class="float=left" /></p>
+	</li>
+	<li>
+		Give your project a name, accept the rest of the defaults, and click <em>Next</em>.
+		<img src="/images/webdriver-newproject1.jpg" class="float=left" />
+	</li>
+	<li>
+		Accept the defaults and click <em>Finish</em>.
+		<img src="/images/webdriver-newproject2.jpg" class="float=left" />
+	</li>
+</ol>
+</p>
+<h3>Add the WebDriver jar files to your project</h3>
+<p>Next we need to add the jar files that are required by WebDriver to our project. We'll start by downloading them.
+<ol>
+	<li>Go to the <a href="http://code.google.com/p/selenium/downloads/list" target="_blank">Selenium Google Code Page</a></li>
+	<li>
+		From the sidebar labelled <em>Featured downloads</em>, choose the Selenium Java zip. As of this writing the file is called <em>selenium-java-2.0a4.zip</em>.
+		That will take you to the page for the download itself.
+	</li>
+	<li>Click on the filename to download the zip to your machine.</li>
+	<li>
+		Unzip the files into the project that you just created. Bill suggested creating a folder under the project root called <em>/lib</em>,
+		and then a folder underneath that called <em>selenium-jars</em> and placing the files there.</li>
+	<li>
+		Back in Eclipse, right click on your project in the Package Explorer and choose <em>Build Path</em>, 
+		<em>Configure Build Path...</em>.
+	</li>
+	<li>Choose the <em>Libraries</em> tab, if it isn't already selected.</li>
+	<li>Click <em>Add Jars...</em></li>
+	<li>
+		Select all of the jars that you just unzipped into the <em>/lib/selenium-jars/</em> folder and click <em>OK</em>. 
+		Your Java Build Path dialog should look something like this:
+		<img src="/images/webdriver-buildpath.jpg" class="float=left" />
+	</li>
+	<li>
+		Choose the primary selenium jar, which in this example is <em>selenium-java-2.0a4.jar</em>, click the down triangle and double-click on <em>Javadoc location</em>.
+		Adding a Javadoc location will add help information to code assist.
+		<img src="/images/webdriver-addjavadoc1.jpg" class="float=left" />
+	</li>
+	<li>
+		Enter the location for the Selenium JavaDocs into the <em>Javadoc location path</em> field. The current location is
+		<em>http://selenium.googlecode.com/svn/trunk/docs/api/java/index.html</em>.
+		<img src="/images/webdriver-addjavadoc2.jpg" class="float=left" />
+	</li>
+	<li>Click <em>OK</em> and then <em>OK</em> again. Your project is now ready to use the WebDriver API.</li>
+</ol>
+</p>
+<h3>Add a class that uses WebDriver</h3>
+<p>In this next step I'm going to depart from Bill's presentation and show you how to create a standalone Java project that uses WebDriver.
+Bill showed us how to create a JUnit test that uses WebDriver, and that is probably what you're going to want to do to create an actual
+functional test, but to keep things simple let's just try to get WebDriver to do something. In the next post I'll go over creating a 
+JUnit test.
+<ol>
+	<li>Right click on the <em>/src</em> folder in your project and choose <em>New</em>, <em>Package</em>.</li> 
+	<li>
+		Give the package a name and click <em>Finish</em>.
+		<img src="/images/webdriver-newpackage.jpg" class="float=left" />
+	</li> 
+	<li>Right click on the package and choose <em>New</em>, <em>Class</em>.</li> 
+	<li>
+		Give the class a name and accept the other defaults, but make sure that <em>public static void main(String[] args)</em> is
+		checked under <em>Which method stubs would you like to create?</em> Click <em>Finish</em>.
+		<img src="/images/webdriver-newclass.jpg" class="float=left" />
+	</li>
+</ol>
+</p>
+<p>
+You should end up in an editor window for your new class that contains code similar to this:
+<code>package test;
+
+public class Test {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}</code></p>
+<p>Edit your code so it looks like this:
+<code>package test;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+
+public class Test {
+
+	public static void main(String[] args) {
+		WebDriver driver = new FirefoxDriver();
+		driver.get("http://www.google.com");
+		WebElement element = driver.findElement(By.name("q"));
+		element.sendKeys("MXUnit");
+		element.submit();
+	}
+
+}</code></p>
+<h3>Run it!</h3>
+<p>Press <em>shift+command+F11</em> to run your Java project. You should see a Firefox browser start up, navigate to www.google.com,
+enter the text MXUnit into the search field, and submit the form, so you end up looking at the MXUnit search results. This worked on
+my system, and hopefully it will work on yours. I'm quite new to all of this, but I did see mentions of issues with different installations
+of Firefox, and, of course, you must have Firefox installed in order for this to work.</p>
+<p>I'm not going to explain what any of the code above is doing, but it should be pretty easy to interpret.  I will go into more details
+in a future blog post, but I think this post has now covered what I wanted to cover, which is how to get WebDriver up and running in
+Eclipse. As I mentioned above, the next post will be about writing a JUnit test that uses WebDriver so we can do some actual
+functional testing with it.</p>
+<p>Once again I'd like to mention that all of this info was gleaned from Bill Shelton's presentation during MXUnit Office Hours, which
+run every other Monday from noon to 1pm Eastern time. I encourage anyone and everyone to join us at 
+<a href="http://experts.na3.acrobat.com/mxunit-office-hours/" target="_blank">experts.na3.acrobat.com/mxunit-office-hours/</a>.</p>

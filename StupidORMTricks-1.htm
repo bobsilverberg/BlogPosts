@@ -1,0 +1,11 @@
+Stupid ColdFusion ORM Tricks - Returning Everything
+
+I've been spending a lot of time trying to get a handle on how ColdFusion interacts with Hibernate, and in particular how the Hibernate session behaves.  I discussed a lot of my findings in my <a href="http://cfinnc.com" target="_blank">CFinNC</a> Advanced ORM session, and I plan to document them here on my blog as well. I'll also be presenting both of my CFinNC sessions to the Online ColdFusion Meetup in the near future.
+</p>
+<p>Now that I'm pretty comfortable with Hibernate session management, I decided to turn my attention to HQL, which I haven't played with much yet, and I came across this interesting gem.  Well, <em>gem</em> might be pushing it, as its usefulness is extremely limited, but still it's cool that it's possible.</p>
+<p>Ok, now before I show you this trick you have to promise that you won't try this on your production server, or even on a development server against a database that's very large. It might not go over very well if you do.</p>
+<p>So what exactly is this Stupid ORM Trick? If you run the following code:
+<code><cfset aReallyBigArrayOfObjects = ormExecuteQuery("from java.lang.Object") />
+</code>
+</p>
+<p>The resulting array will contain all of the objects in your database. That's right, <strong>all</strong> of them. Now you can see why you'd need to be careful about where you run this. So, useful? Not really. Cool? Kinda. Stupid? You bet!</p>

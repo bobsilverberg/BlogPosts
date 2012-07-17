@@ -1,0 +1,257 @@
+jQuery Auto-Filtering Table
+
+I've been using jQuery for about a year now and I must admit that pretty much any JavaScript that I wrote prior to that looks ugly to me now.  I know I'm nowhere near the first person to say this, but if you write JavaScript and you aren't using jQuery, you should check it out. Now.</p>
+<p>Anyway, I wanted to show you how easy it is to do something cool with jQuery.  The next thing I'll admit is that much of what I'm doing with jQuery involves using existing plugins written by other, more seasoned JavaScripters than me.  But enough talk, here's the table:
+</p>
+<p>
+	<script src="assets/jQuery/jquery.js" type="text/javascript"></script>
+	<script type="text/javascript" src="assets/jQuery/tablesorter/jquery.tablesorter.min.js"></script>
+	<script type="text/javascript" src="assets/jQuery/jquery.uitablefilter.js"></script>
+	<link rel="stylesheet" href="assets/jQuery/tablesorter/themes/blue/style.css" type="text/css" media="print, projection, screen" />
+	<script type="text/javascript">
+	$(document).ready(function() 
+	    { 
+			$table = $("#myTable").tablesorter({widthFixed: true, widgets: ['zebra']});
+			var FilterText = "";
+			var ColumnArray = ["Country","Province/State"];
+			for (i=1;i<=ColumnArray.length;i++) {
+		        $("#myTable tbody tr").find("td:eq(" + i + ")").click( function() {
+		        	clickedText = $(this).text();
+					FilterText = ((FilterText == clickedText) ? "" : clickedText );
+		        	$.uiTableFilter( $table, FilterText, ColumnArray[i]);
+		        });
+			}
+	    } 
+	); 
+	</script>
+	<table cellpadding="2" cellspacing="0" class="tablesorter" id="myTable">
+		<thead>
+			<tr>
+				<th>Country</th>
+				<th>Province/State</th>
+				<th>City</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Canada</td>
+				<td>Alberta</td>
+				<td>Calgary</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Alberta</td>
+				<td>Edmonton</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>British Columbia</td>
+				<td>Vancouver</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>British Columbia</td>
+				<td>Victoria</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Ontario</td>
+				<td>Kingston</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Ontario</td>
+				<td>London</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Ontario</td>
+				<td>Ottawa</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Ontario</td>
+				<td>Toronto</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>California</td>
+				<td>Los Angeles</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>California</td>
+				<td>San Francisco</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>California</td>
+				<td>San Jose</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>Texas</td>
+				<td>Dallas</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>Texas</td>
+				<td>Houston</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>Texas</td>
+				<td>Lubbock</td>
+			</tr>
+		</tbody>
+	</table>
+</p>
+'This trick involves using two plugins:
+<ul>
+	<li>
+		<a href="http://tablesorter.com/docs/" target="_blank">tablesorter</a>, an absolutely awsome plugin from <a href="http://lovepeacenukes.com/" target="_blank">Christian Bach</a>
+	</li>
+	<li>
+		<a href="http://gregweber.info/projects/uitablefilter" target="_blank">uiTableFilter</a>, an only somewhat less awsome plugin from <a href="http://gregweber.info/" target="_blank">Greg Weber</a>
+	</li>
+</ul>
+</p>
+<p>In addition to those plugins, it's just a handful of code:
+<code>
+<script type="text/javascript">
+$(document).ready(function() 
+    { 
+		$table = $("#myTable").tablesorter({widthFixed: true, widgets: ['zebra']});
+		var FilterText = "";
+		var ColumnArray = ["Country","Province/State"];
+		for (i=1;i<=ColumnArray.length;i++) {
+	        $("#myTable tbody tr").find("td:eq(" + i + ")").click( function() {
+	        	clickedText = $(this).text();
+				FilterText = ((FilterText == clickedText) ? "" : clickedText );
+	        	$.uiTableFilter( $table, FilterText, ColumnArray[i]);
+	        });
+		}
+    } 
+); 
+</script>
+</code>
+just '</p>'Fun - Auto<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head>
+	<title>Table Sort and Filter Demo</title>
+	<script src="assets/jQuery/jquery.js" type="text/javascript"></script>
+	<script type="text/javascript" src="assets/jQuery/tablesorter/jquery.tablesorter.min.js"></script>
+	<script type="text/javascript" src="assets/jQuery/jquery.uitablefilter.js"></script>
+	<link rel="stylesheet" href="assets/jQuery/tablesorter/themes/blue/style.css" type="text/css" media="print, projection, screen" />
+</head>
+<body>
+	<table cellpadding="2" cellspacing="0" class="tablesorter" id="myTable">
+		<thead>
+			<tr>
+				<th>Country</th>
+				<th>Province/State</th>
+				<th>City</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Canada</td>
+				<td>Alberta</td>
+				<td>Calgary</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Alberta</td>
+				<td>Edmonton</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>British Columbia</td>
+				<td>Vancouver</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>British Columbia</td>
+				<td>Victoria</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Ontario</td>
+				<td>Kingston</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Ontario</td>
+				<td>London</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Ontario</td>
+				<td>Ottawa</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Ontario</td>
+				<td>Toronto</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>California</td>
+				<td>Los Angeles</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>California</td>
+				<td>San Francisco</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>California</td>
+				<td>San Jose</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>Texas</td>
+				<td>Dallas</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>Texas</td>
+				<td>Houston</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>Texas</td>
+				<td>Lubbock</td>
+			</tr>
+		</tbody>
+	</table>
+<script type="text/javascript">
+$(document).ready(function() 
+    { 
+		$table = $("#myTable").tablesorter({widthFixed: true, widgets: ['zebra']});
+		var FilterText = "";
+		var ColumnArray = ["Country","Province/State"];
+		for (i=1;i<=ColumnArray.length;i++) {
+	        $("#myTable tbody tr").find("td:eq(" + i + ")").click( function() {
+	        	clickedText = $(this).text();
+				FilterText = ((FilterText == clickedText) ? "" : clickedText );
+	        	$.uiTableFilter( $table, FilterText, ColumnArray[i]);
+	        });
+		}
+		/*
+        $("#myTable tbody tr").find("td:eq(0)").click( function() {
+        	clickedText = $(this).text();
+			FilterText = ((FilterText == clickedText) ? "" : clickedText );
+        	$.uiTableFilter( $table, FilterText, "Country");
+        });
+        $("#myTable tbody tr").find("td:eq(1)").click( function() {
+        	clickedText = $(this).text();
+			FilterText = ((FilterText == clickedText) ? "" : clickedText );
+        	$.uiTableFilter( $table, FilterText, "Province/State");
+        });
+        */
+    } 
+); 
+</script>
+
+</body></html>

@@ -1,0 +1,21 @@
+jQuery Quickie - Checking Whether an Element Exists
+
+I'm still a relative noob when it comes to jQuery, so today, when I had a need to check whether a particular form field existed, I
+had no idea how to do it. 
+Of course some quick Googling brought me an <a href="http://jqueryfordesigners.com/element-exists/" target="_blank">answer</a>, 
+from the <a href="http://jqueryfordesigners.com/" target="_blank">jQuery for Designers</a> site by 
+<a href="http://remysharp.com/" target="_blank">Remy Sharp</a>.</p>
+<p>The quick answer is that you can test the <em>length</em> property of any jQuery object, and if it returns zero then the element
+doesn't exist. For example, what I wanted to do was to disable a form field if another form field existed, so I wrote the following code:
+<code>if ($("#fieldA").length != 0) {
+	$("#fieldB").attr("disabled", "disabled");
+}</code></p>
+<p>Reading through the <a href="http://jqueryfordesigners.com/element-exists/#allcomments" target="_blank">comments</a> on that page, 
+I saw a suggestion by <a href="http://binarykitten.me.uk/" target="_blank">Kat Reeve</a> to add the following to a standard JavaScript
+include file:
+<code>jQuery.fn.exists = function() { return (this.length > 0); };</code></p>
+<p>Which would allow me to change the above code to:
+<code>if ($("#fieldA").exists()) {
+	$("#fieldB").attr("disabled", "disabled");
+}</code></p>
+<p>Nice, innit?</p>

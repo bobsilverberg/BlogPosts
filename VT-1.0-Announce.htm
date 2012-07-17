@@ -1,0 +1,43 @@
+Just a quick note to announce the release of version 1.1 of <a href="http://www.validatethis.org/" target="_blank">ValidateThis</a>, 
+an awesome validation framework for ColdFusion. This version includes one new validation type, <em>notRegex</em>, which was contribted by
+<a href="http://www.aliaspooryorik.com/" target="_blank">John Whish</a>, and a bunch of small fixes, contributed by
+<a href="http://chris.m0nk3y.net/" target="_blank">Greg Moser</a>
+	<li><a href="http://twitter.com/Clarkee21" target="_blank">James Buckingham</a></li>
+	<li><a href="http://www.dustinmartin.net/" target="_blank">Dustin Martin</a></li>
+	<li><a href="http://blog.mxunit.org/" target="_blank">Marc Esher</a></li>
+	<li><a href="http://jamiekrug.com/blog/" target="_blank">Jamie Krug</a></li>
+	<li><a href="http://sebduggan.com/" target="_blank">Seb Duggan</a></li>
+	<li><a href="http://www.henke.ws/" target="_blank">Mike Henke</a></li>
+	<li><a href="http://adamdrew.me/blog/" target="_blank">Adam Drew</a></li>
+</ul>
+</p>
+<p>Most of went into this release won't be noticable to the developer, or at least won't affect the way you interact with the framework. Here's a quick summary of
+the changes in this release:
+<ul>
+	<li>Upgraded to the latest version of the jQuery Validation plugin, which replaces jquery.validate.pack.js with jquery.validate.min.js. 
+		If you are loading this file yourself (as opposed to using a CDN, which the framework does by default), then you should replace that file.</li>
+	<li>The default generated failure messages are now identical on the client and server, and are based on information in a resource bundle. 
+		This means you can easily change the default generated failure messages if you wish, and the changes will be reflected on the client and the server.</li>
+	<li>Thanks to John Whish (who I have unilaterally appointed as client-side-czar for the framework) the Javascript that is generated has been greatly improved.
+		Many of the changes that John made were based on suggestions from <a href="http://blog.pengoworks.com/" target="_blank">Dan Switzer</a>.</li>
+	<li>You can now store your definition files in a folder structure that mirrors a dot-based naming scheme for components.</li>
+	<li>You can now instruct the framework to ignore missing properties in your objects, as opposed to throwing an exception if a property is missing.</li>
+</ul>
+</p>
+<p>The biggest change is the second one mentioned above: the default generated failure messages. If you are currently using the i18n capabilities of the framework 
+this may affect you, so I suggest you read the <a href="http://www.validatethis.org/docs/wiki/Internationalization_with_ValidateThis.cfm" target="_blank">i18n information</a> available in the online documentation.
+</p>
+<p>If you've been holding off checking out the framework until it reached version 1.0 (silly people), now's the time to get cracking. 
+Here are some resources that will help you:
+<ul>
+	<li>The main home of the framework is <a href="http://www.validatethis.org/" target="_blank">www.validatethis.org</a>, 
+		which includes an online demo and links to all of the following.</li>
+	<li>The framework can be downloaded from the <a href="http://validatethis.riaforge.org/" target="_blank">ValidateThis RIAForge page</a>.</li>
+	<li>Online documentation is available at <a href="http://www.validatethis.org/docs/" target="_blank">www.validatethis.org/docs</a>.</li>
+	<li>API documentation is available at <a href="http://www.validatethis.org/docs/api/" target="_blank">www.validatethis.org/docs/api</a>.</li>
+	<li>There is a Google group available for asking questions, making suggestions, and general discussion at <a href="https://groups.google.com/group/validatethis" target="_blank">groups.google.com/group/validatethis</a>.</li>
+	<li>The source code is hosted at <a href="https://github.com/ValidateThis/ValidateThis/" target="_blank">GitHub</a>, and contributions are always welcome.</li>
+</ul>
+</p>
+<p>So what's stopping you? Go download the latest and greatest version of ValidateThis and take it for a spin!</p>
+ 

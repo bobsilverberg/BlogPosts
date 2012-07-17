@@ -1,0 +1,193 @@
+Injecting Dependencies into CF9 ORM Entities
+
+There has been a bit of discussion in the blogs about injecting dependencies into ORM entities so I thought I'd chime in with the method that I've developed. 
+<p>
+When I started working with ColdFusion 9's ORM capabilities I quickly ran into situations in which I wanted to inject other objects into my persistent objects.  This topic probably raises a couple of questions, namely:
+<ul>
+	<li>What do you mean by "inject other objects into persistent objects"?</li>
+	<li>Why would I want to inject other objects into my persistent objects?</li>
+</ul>
+</p>
+<p>Let's start by addressing those questions.</p>
+<h3>What do you mean by "inject other objects into persistent objects"?</h3>
+<p>I'm using the term <em>persistent object</em> to refer to a ColdFusion 9 cfc that has a <em>persistent="true"</em> attribute.  
+That is, an object that has been created from a cfc that will be persisted to a database via Hibernate, using CF9's ORM integration.  
+These are variously referred to as persistent objects, ORM objects, entity objects, etc.</p>
+<p>When I say <em>other objects</em>, I mean objects that have been created from cfcs that do not have a <em>persistent="true"</em> attribute. 
+That is, the plain old objects that we're used to working with in CF 6, 7 and 8.
+So, when I say injecting other objects into a persistent object I simply mean that we pass a reference to one of those <em>plain jane</em> objects to the persistent object, 
+and store it inside the persistent object, often in the <em>variables</em> scope.
+</p>
+<h3>Why would I want to inject other objects into my persistent objects?</h3>
+<p>The main reason to inject other objects into a persistent object is to add behaviour to the persistent object.
+Some examples of that include:
+<ul>
+	<li>To allow the object to validate itself by injecting a <em>Validator</em> object.</li>
+	<li>To allow the object to save and delete itself by injecting a <em>Gateway</em> object.</li>
+	<li>To allow the object to interact with the file system by injecting a <em>FileSystem</em> object.</li>
+	<li>To allow the object to interact with other, unrelated objects by injecting a <em>Service</em> object.</li>
+</ul>
+</p>
+<p>By injecting one of the above mentioned objects into a persistent object I can then ask the persistent object to do things that it doesn't really know how to do.  
+For example, I can keep the logic for validation encapsulated in a separate object (a Validator object), but still add the desired behaviour (validation) to my persistent object.
+I refer to the relationship between the persistent object and the other object as a dependency because the persistent object <em>depends</em> on the other object to get its job done.</p>
+<h3>Encapsulating Logic</h3>
+<p>In the previous paragraph I stated that, by injecting a separate object, I can <em>keep the logic for validation encapsulated</em> in a separate object. What does this mean and why is it important?</p>
+<p>Encapsulation is a big, often complicated concept, and it's not the goal of this article to explain all of its methods and benefits, but we can take a look at this specific example of encapsulation.
+We know that our user object will have certain validation rules. For example, the User Name must be unique and the Password must contain at least 8 characters. 
+Because we are working with a User <em>object</em>, it makes sense to add <em>behaviour</em> to that object, so that we can ask the User object to validate itself.
+This means that the User object would need a validate() method, but where should the code that implements those validation rules reside?
+</p>
+<p>Certainly the simplest answer, at first glance, would be to put that code in the User object itself, in its validate() method. 
+That method would contain all of the code that checks whether the User Name is unique and whether the Password contains at least 8 characters, and then returns some sort of response.
+This means that the User object would know how the validation logic has been <em>implemented</em>. The problem arises when we want to change <em>how</em> that validation logic is implemented.
+To change the way the User object is validated we would have to change the User object itself.</p>
+<p>Now imagine that we <em>encapsulate</em> that logic in another object, say a Validator object, 
+and we inject that Validator object into our User object.  Now the validate() method in our User object does not implement any validation logic. Instead it simply asks the Validator object to do the
+validation instead. The benefit to this approach is that if we ever decide to change the way that the validation is performed, we can make that change without affecting the User object at all.  
+The User object doesn't care about <em>how</em> the validation is performed, it simply knows that it can ask the Validator object to do the job. 
+This is an example of encapsulation, and is one of the main reasons that we are interested in injecting other objects into our persistent objects. 
+</p>
+<p>Now that we've addressed the what and the why, it's time to address the how.</p>
+<h3>How do I inject dependencies into my persistent objects?</h3>
+<p>As discussed above, injecting dependencies into your persistent objects involves passing a reference to the <em>other</em> object into a method of your persistent object and then storing it,
+ usually in the <em>variables</em> scope. That means that in order to inject a dependency we need a method into which we can pass the other object.</p>
+<p>Let's continue with the specific example of wanting to inject a <em>Validator</em> object into a persistent <em>User</em> object. 
+Let's take a quick look at our User.cfc as it stood before we realized that we wanted to inject a Validator into it:
+<code><cfcomponent persistent="true" entityname="User" table="tblUser" >
+	<cfproperty name="UserId" fieldtype="id" generator="native" />
+	<cfproperty name="UserName" />
+	<cfproperty name="UserPass" />
+</cfcomponent></code>
+</p>
+<p>We've got a User object with an Id of UserId and two properties, one for the User Name and one for the Password. 
+We then realize that we want to inject a Validator object into this User object, and therefore we need a method to do that. We have a couple of options for what that method could be:
+<ul>
+	<li>The constructor</li>
+	<li>A setter</li>
+</ul>
+</p>
+<h3>Constructor vs Setter Injection</h3>
+<p>The constructor is a method that must be called in order to properly create an instance of the component. It is a common practice in ColdFusion development to create a method called init() for this purpose.
+In fact, CF9's ORM features will automatically call the init() method for you when it creates an object, which can be helpful, but also raises a problem.</p>
+<p>Because CF9 does this in the background when loading an existing object (via EntityLoad()), there is no opportunity to pass our Validator object into the init() method,
+ so it's not really viable to use the constructor. Note that I'm actually going to revisit this later in the article, but for now we should assume that we cannot use the init() method for injecting dependencies.
+This means that we need to define an alternate method, which we can call ourselves, and pass in a reference to the Validator object.</p>
+<p>It was common practice, pre-CF9 to create a <em>setter</em> method for this.  In our example that would involve creating a method called <em>setValidator()</em> that would look something like this:
+<code><cffunction name="setValidator" returntype="void" access="public" output="false">
+	<cfargument name="Validator" type="any" required="true" />
+	<cfset variables.Validator = arguments.Validator />
+</cffunction></code>
+</p>
+<p>Thanks to CF9's implicit getters and setters we no longer have to create this <em>setValidator()</em> method. 
+We can simply add a cfproperty tag for a <em>Validator</em> property and CF9 will automagically create the setter for us:
+<code><cfcomponent persistent="true" entityname="User" table="tblUser" >
+	<cfproperty name="UserId" fieldtype="id" generator="native" />
+	<cfproperty name="UserName" />
+	<cfproperty name="UserPass" />
+	<cfproperty name="Validator" persistent="false" />
+</cfcomponent></code>
+</p>
+<p>Note that we specify the <em>persistent</em> attribute of the Validator property to be <em>false</em>, because Validator is not a property that we need persisted to the database.
+We are only using it to store an object that will be used by an active instance of our cfc.</p>
+<p>Now we can call setValidator() on our User object and whatever we pass in will be stored in variables.Validator, whence it can be retrieved when the time comes to validate the object. 
+So how do we pass a reference to our Validator object into the setValidator() method?  The most basic example would be something like this:
+<code><cfset User = EntityLoad("User",1,true) />
+<cfset Validator = CreateObject("component","model.Validator").init() />
+<cfset User.setValidator(Validator) /></code>
+</p>
+<p>That gives us a reference to the Validator object inside our User object, but there are a couple of problems with this example. Firstly, we may not want to create a brand new Validator object for each
+and every User object, we may want to use a <em>Singleton</em> instead. Secondly, it is not a great idea to have code all over our application that creates objects (e.g., via CreateObject or the New keyword).
+This makes it difficult to move our cfcs around (because paths to them are hardcoded throughout or application), and if we need to inject dependencies into those objects it quickly becomes difficult to maintain.
+For these reasons (among others) it is a good idea to encapsulate object creation within another object, and that is something that the Coldspring BeanFactory does very well.
+So, rather than create our Validator object manually, we're going to ask Coldspring to manage it for us:
+<code><cfset User = EntityLoad("User",1,true) />
+<cfset User.setValidator(application.beanFactory.getBean("Validator")) /></code>
+</p>
+<p>That is an improvement, but there's a problem. What if our User object has an Account object composed into it? CF9 will automatically create the composed Account object when it
+creates the User object, so we'd have to remember to manually inject a Validator into the Account object as well. 
+If a User object could have <em>multiple</em> Account objects, well that would make it even more complicated.
+Wouldn't it be nice if we could have the Validator injected into all of our persistent objects automatically when it they are created by the EntityLoad() function?
+Enter CF9's ORM EventHandler.</p>
+<h3>Using an EventHandler to Inject Dependencies</h3>
+<p>The EventHandler is a cfc that must implement the <em>CFIDE.ORM.IEventHandler</em> interface, and that has methods that fire whenever certain ORM events take place.  
+These events include loading objects, and inserting, updating and deleting records in underlying tables. In order to have our Validator injected automatically into our User object
+ we can harness the power of the EventHandler's <em>preLoad()</em> method. 
+An in-depth discussion of the EventHandler is outside the scope of this article, but here's a snippet of a preLoad() method that would inject a Validator object into all persistent objects:
+<code><cffunction name="preLoad" access="public" returntype="void">
+	<cfargument name="entity" type="Any" />
+	<cfset arguments.entity.setValidator(application.BeanFactory.getBean("Validator")) />
+</cffunction></code>
+</p>
+<p>Not bad, but there are some problems with that approach. First off it will inject a Validator object into each and every persistent object in our system.  Maybe we don't want that to happen. 
+We could add some conditional code that checks to see whether the object expects a Validator and then only inject into those objects.
+But maybe we need a UserValidator injected into all User objects and a ProductValidator injected into all Product objects. 
+That conditional code would get pretty ugly in short order. In addition, we probably don't only have Validators to inject.  
+We may have lots of different objects that need to be injected into different persistent objects. 
+All of a sudden we're maintaining information about dependencies within our EventHandler, and isn't that what Coldspring is supposed to be doing for us?</p>
+<p>Yes, it is.  And thanks to Brian Kotek, it can.  Enter Brian's BeanInjector.</p>
+<h3>Using the BeanInjector to Inject Dependencies</h3>
+<p>Brian created a BeanInjector component which works in conjunction with Coldspring to <em>autowire</em> a component.  
+In a nutshell this means that it is able to match up setters in a component to bean definitions in Coldspring and automatically inject dependencies into objects. 
+Again, it's not really possible to go into much detail about the BeanInjector in this article, so let's just look at a preLoad() method that will allow the BeanInjector to autowire your persistent objects for you:
+<code><cffunction name="preLoad" access="public" returntype="void">
+	<cfargument name="entity" type="Any" />
+	<cfset application.BeanFactory.getBean("BeanInjector").autowire(arguments.entity) />
+</cffunction></code>
+</p>
+<p>With that single line of code, and with some configuration in Coldspring, of course, all of your persistent objects will get injected with any required dependencies. 
+For example, if our User object requires a UserValidator object, a FileSystem object and a UserGateway object, we would define our User like so:
+<code><cfcomponent persistent="true" entityname="User" table="tblUser" >
+	<cfproperty name="UserId" fieldtype="id" generator="native" />
+	<cfproperty name="UserName" />
+	<cfproperty name="UserPass" />
+	<cfproperty name="UserValidator" persistent="false" />
+	<cfproperty name="FileSystem" persistent="false" />
+	<cfproperty name="UserGateway" persistent="false" />
+</cfcomponent></code>
+ </p>
+<p>As long as there are beans defined to Coldspring for UserValidator, FileSystem and UserGateway, thanks to that single line of code in our EventHandler,
+they will automatically be injected into any User objects loaded via the EntityLoad() function. So our code to retrieve an existing User object and inject it with its required dependencies becomes:
+<code><cfset User = EntityLoad("User",1,true) /></code>
+</p>
+<p>Yes, it's really as simple as that.</p>
+<p>But what about new entities, you may ask? Yes, that's a bit of a problem.  
+New entities, those created via <em>CreateObject()</em>, <em>EntityNew()</em> or the <em>New</em> operator will not have the preLoad() EventHandler method called on them, so they won't get autowired.</p>
+<h3>Injecting Dependencies into New Persistent Objects</h3>
+<p>Unfortunately, as of the current beta version of CF9, there is no way to automatically inject dependencies into new objects. That's not as bad as it sounds.   
+We can still use the BeanInjector to autowire our new objects, but we have to explicitly ask that it be done for us. We cannot rely on an EventHanlder to ensure that it gets done automatically.
+Let's take a look at an example of injecting dependencies into a brand new User object:
+<code><cfset User = EntityNew("User") />
+<cfset application.BeanFactory.getBean("BeanInjector").autowire(User) /></code>
+</p>
+<p>That's actually quite simple, but it does mean that every time we create a <strong>new</strong> persistent object we need to remember to ask the BeanInjector to autowire it for us.
+I've come up with a couple of solutions to this problem:
+<ul>
+	<li>Use a Service based on an Abstract Service to create all persistent objects</li>
+	<li>Use the init() method</li>
+</ul>
+</p>
+<h3>Using a Service Object</h3>
+<p>My preferred solution is to use a Service object to create all of my persistent objects, whether they are new or existing. 
+All of my Service objects extend an AbstractService object which contains the code that does the autowiring.  That means that I only have to maintain that code in a single location,
+and as long as I ask a Service object for a persistent object, I can count on it being autowired for me. I plan on describing that AbstractService in detail in a future article.</p>
+<h3>Using the init() Method</h3>
+<p>Another solution to the problem is to forego using the EventHandler and simply use the init() method in your persistent object to do the injection. 
+You may be saying, "wait, didn't he say earlier that we cannot use the init() method for this". That's true, I did make that point, but that was before we were using Coldspring to manage our
+dependencies. Prior to that we couldn't use init() because we couldn't pass anything into it for objects created via EntityLoad(), which meant that we couldn't pass in our Validator object.
+Now that we're using Coldspring to manage our non-persistent objects, we don't want to be passing a objects around anyway, we really just want to ask the BeanInjector to do its thing.
+Because the Coldspring BeanFactory will be loaded into a known scope (e.g., the application scope) we can simply ask Coldspring for the BeanInjector and then ask it to do the autowiring. 
+It would look something like this:
+<code><cffunction name="init" access="public" returntype="any" hint="I am the init method inside a persistent object">
+	<cfset application.BeanFactory.getBean("BeanInjector").autowire(this) />
+</cffunction></code>
+</p>
+<p>It doesn't get much simpler than that. With that single line of code in the init() method of each of your persistent objects, they will all get injected with any dependencies whenever they are created,
+whether as new objects or as existing objects. If that's so simple, why isn't it my preferred method? The reason is that it breaks encapsulation. 
+By adding that line of code to our object's init() method, not only are we reaching out to a global scope, but we are also forcing our object to depend on Coldspring. 
+With the other solution our object remains ignorant of how its dependencies are being injected, which to me is preferable.</p>
+<p>Now I realize that this may be the place for pragmatism. Perhaps the init() approach is just so simple and flexible that it might make that break from encapsulation worthwhile. I'm still on the fence about it. How about you?</p>
+<h3>Performance Implications</h3>
+<p>I haven't done any testing of how well either of these approaches perform, particularly when one considers, due to composition, that one could have dozens, hundreds or even thousands of objects loaded when one object is requested.
+It may be that the EventHandler approach may suffer from poor performance in those situations. I have been thinking about a design that would allow for dependencies to be <em>lazy loaded</em>, which might mitigate
+the problem somewhat.  Look for a future posting on that topic.</p>

@@ -1,0 +1,6 @@
+It's Official, ValidateThis! Works with Reactor
+
+I designed ValidateThis!, my validation framework for ColdFusion objects, to be framework agnostic, meaning that it could be used to provide validation services to Business Objects regardless of what other frameworks a developer chooses to use.  That was my goal, and that was how it was implemented.  But, up until about a week ago, I had never actually used it with anything other than Transfer.</p>
+<p>As a result of some discussions I had with <a href="http://www.nodans.com/" target="_blank">Dan Wilson</a>, I determined that I needed to make sure that VT could actually work as easily with <a href="http://trac.reactorframework.org/" target="_blank">Reactor</a> as it does with <a href="http://www.transfer-orm.com/" target="_blank">Transfer</a>. Using the new <em>super-simple</em> integration technique that I mentioned in <a href="http://www.silverwareconsulting.com/index.cfm/2009/4/8/Stop-the-Presses--ValidateThis-Now-Easier-to-Use-Than-a-Mac" target="_blank">an earlier post</a>, I was able to get VT working with Reactor in exactly the same manner as Transfer, in a matter of minutes.</p>
+<p>So I'm now satisfied that VT truly is framework agnostic, which is pretty cool, as I imagine it might come in handy working with the new ORM features being touted for CF9.</p>
+

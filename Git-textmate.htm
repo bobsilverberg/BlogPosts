@@ -1,0 +1,23 @@
+Using TextMate as the Default Editor for Git
+
+There are a number of Git commands which pop open a text editor which you then use to provide information. For example, if you issue the command:
+<code>git commit</code></p>
+<p>The editor will appear allowing you to type your commit message. The default editor that appears for me, on OS X, is <em>vi</em>
+which is a strange beast to work with if you've never encountered it before (which I hadn't, prior to using Git). 
+I found a <a href="http://www.tuxfiles.org/linuxhelp/vimcheat.html" target="_blank">helpful cheat sheet</a>, which allowed me to use the
+editor, but I still find it cumbersome. Thankfully it's a pretty simple matter to use a different text editor with Git. I'm sure
+there are a number of ways of doing this, and I'm going to discuss two of them. To start, let's look at how Git decides what editor to use.</p>
+<h3>Which editor will Git use?</h3>
+<p>According to the <a href="http://www.kernel.org/pub/software/scm/git/docs/git-commit.html" target="_blank">man page for git-commit</a>,
+	<blockquote>
+		<p>The editor used to edit the commit log message will be chosen from the GIT_EDITOR environment variable, the core.editor configuration variable, the VISUAL environment variable, or the EDITOR environment variable (in that order).</p>
+	</blockquote>
+	We're going to look at changing the EDITOR environment variable and the core.editor configuration variable.
+</p>
+<p> 
+<h3>Change the EDITOR environment variable</h3>
+<p>Simply add the following line to your .bash_profile:<code>export EDITOR="/usr/bin/mate -w"</code></p>
+<p>This will cause Git to use TextMate, and may also allow other command line tools to use it as well.</p>
+<h3>Change the core.editor configuration variable</h3>
+<p>Issue the following command:<code>git config --global core.editor "mate -w"</code></p>
+<p>This is useful if you only want to change the behaviour of Git, and not affect the rest of your environment.</p>

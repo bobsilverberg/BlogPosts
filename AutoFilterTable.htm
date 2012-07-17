@@ -1,0 +1,140 @@
+I've been using <a href="http://jquery.com/">jQuery</a> for about a year now and I must admit that pretty much any JavaScript that I wrote prior to that looks ugly to me now.  I know I'm nowhere near the first person to say this, but if you write JavaScript and you aren't using jQuery, you should check it out. Now.</p>
+<p>Anyway, I wanted to show you how easy it is to do something cool with jQuery.  The next thing I'll admit is that much of what I'm doing with jQuery involves using existing plugins written by other, more seasoned JavaScripters than me.  But enough talk, here's the table:
+	<script src="/assets/jQuery/jquery.js" type="text/javascript"></script>
+	<script type="text/javascript" src="/assets/jQuery/tablesorter/jquery.tablesorter.min.js"></script>
+	<script type="text/javascript" src="/assets/jQuery/jquery.uitablefilter.js"></script>
+	<link rel="stylesheet" href="/assets/jQuery/tablesorter/themes/blue/style.css" type="text/css" media="print, projection, screen" />
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$table = $("#myTable")
+			.tablesorter({widthFixed: true, widgets: ['zebra']});
+		FilterText = "";
+		ColumnArray = ["Country","Province/State"];
+		for (i=0;i<ColumnArray.length;i++) {
+			$("#myTable tbody tr").find("td:eq(" + i + ")").click( function() {
+				clickedText = $(this).text();
+				FilterText = ((FilterText == clickedText) ? "" : clickedText );
+				$.uiTableFilter( $table, FilterText, ColumnArray[i]);
+			});
+		}
+	});
+	</script>
+	<table cellpadding="2" cellspacing="0" class="tablesorter" id="myTable">
+		<thead>
+			<tr>
+				<th>Country</th>
+				<th>Province/State</th>
+				<th>City</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Canada</td>
+				<td>Alberta</td>
+				<td>Calgary</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Alberta</td>
+				<td>Edmonton</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>British Columbia</td>
+				<td>Vancouver</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>British Columbia</td>
+				<td>Victoria</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Ontario</td>
+				<td>Ajax</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Ontario</td>
+				<td>Kingston</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Ontario</td>
+				<td>London</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Ontario</td>
+				<td>Ottawa</td>
+			</tr>
+			<tr>
+				<td>Canada</td>
+				<td>Ontario</td>
+				<td>Toronto</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>California</td>
+				<td>Los Angeles</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>California</td>
+				<td>San Francisco</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>California</td>
+				<td>San Jose</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>Texas</td>
+				<td>Dallas</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>Texas</td>
+				<td>Houston</td>
+			</tr>
+			<tr>
+				<td>United States</td>
+				<td>Texas</td>
+				<td>Lubbock</td>
+			</tr>
+		</tbody>
+	</table>
+</p>
+<p>You'll notice that you can sort the table by any of the columns, in both ascending and descending order, and even by multiple columns if you hold down the Shift key while clicking.  That sortable behaviour, and the nice zebra striping is all part of the awesome <a href="http://tablesorter.com/docs/" target="_blank">tablesorter</a> plugin, written by <a href="http://lovepeacenukes.com/" target="_blank">Christian Bach</a>.</p>
+<p>Now see what happens when you click on a Country or a Province/State in the table.  That's right, the table filters itself based on your selection.  Clicking on the same Country or Province/State removes the filter.  Once the table is filtered you can still sort on any or all of the columns.  This filtering functionality is provided by the only slightly less awesome <a href="http://gregweber.info/projects/uitablefilter" target="_blank">uiTableFilter</a> plugin, written by <a href="http://gregweber.info/" target="_blank">Greg Weber</a>.</p>
+<p>All I had to do was write a few lines of code to implement the plugins and set up the events to be fired when clicking the data in the table:
+<code>
+<script type="text/javascript">
+$(document).ready(function() {
+	$table = $("#myTable")
+		.tablesorter({widthFixed: true, widgets: ['zebra']});
+	FilterText = "";
+	ColumnArray = ["Country","Province/State"];
+	for (i=0;i<ColumnArray.length;i++) {
+		$("#myTable tbody tr").find("td:eq(" + i + ")").click( function() {
+			clickedText = $(this).text();
+			FilterText = ((FilterText == clickedText) ? "" : clickedText );
+			$.uiTableFilter( $table, FilterText, ColumnArray[i]);
+		});
+	}
+});
+</script>
+</code>
+</p>
+<p>First I make the table, which has an id of "myTable", sortable using the tablesorter plugin.  Next I create a couple of local variables:
+<ul>
+	<li>FilterText will hold the current value that is being used to filter the table.</li>
+	<li>ColumnArray is an array of column headings that I want to be clickable.</li>
+</ul>
+</p>
+<p>I then loop through the ColumnArray assigning a click event to the proper column of each table row.  The click event captures the text that was clicked on and saves it to clickedText.  clickedText is then compared to FilterText to determine whether to apply a new filter (if a new value was clicked) or remove the filter (if the same value was clicked). Finally the new filter is applied to the proper column of the table.
+</p>
+<p>And there you have it, a pretty neat trick accomplished with very few lines of JavaScript Code.</p>
+<p>Regarding the <a href="http://tablesorter.com/docs/" target="_blank">tablesorter</a> plugin, it truly is awesome and can do a lot more that I have described in this post.  In addition to being incredibly configurable, it also has a paging addon that gives you a full featured paging control for your table.</p>
+ 

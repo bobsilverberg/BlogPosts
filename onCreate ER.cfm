@@ -1,0 +1,5 @@
+Requesting that an onCreate() method be added to Application.cfc.  This method would be called whenever a new instance of a cfc is created, whether via CreateObject or via EntityLoad. The method should be called prior to any of the code in the cfc being run (e.g., prior to init()). This would provide a common hook into the cfc creation process which would allow for the implementation of consistent Dependency Injection (DI).
+
+In order to avoid the potential hit of calling yet another method each time an object is created, it should be possible to specify in the cfc's metadata that the onCreate() method not be called.  So if a developer has cfcs for which they do not want this functionality it can be turned off.
+
+This would address the issue for which I raised ER #76833 requesting an onNew() handler in the ORMInterceptor.  This enhancement would decouple this functionality from the ORM integration, and would also allow developers to implement DI in a consistent manner with both ORM and non-ORM cfcs.

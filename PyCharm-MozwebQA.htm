@@ -1,0 +1,37 @@
+Setting Up PyCharm to Run MozWebQA Tests
+
+<p><a href="http://www.jetbrains.com/pycharm/" target="_blank">PyCharm</a> is a Python IDE, released by <a href="http://www.jetbrains.com/index.html" target="_blank">JetBrains</a>. I quite enjoy using it and, as I've recently started contributing some tests to Mozilla's <a href="https://quality.mozilla.org/teams/web-qa/" target="_blank">Web QA</a> department (mozwebqa), I wanted to use it to interactively debug some mozwebqa tests. This turned out to be a lot trickier than I had imagined, so I am documenting the steps to do so via this post.</p>
+<p>This post assumes you have a project open in PyCharm for one of the mozwebqa projects. I am going to use <a href="https://github.com/mozilla/marketplace-tests" target="_blank">marketplace-tests</a> for this example.As I am on a Mac the instructions and screen shots will be OS X specific, but I imagine they will translate pretty closely to Windows.</p>
+<p><strong>Step 1 - Configure py.test as your default test runner</strong></p>
+<p><ol>
+    <li>Open up the <em>Preferences...</em> dialog and choose <em>Python Integrated Tools</em> under <em>Project Settings</em>.</li>
+    <li>Choose <strong>py.test</strong> as the <em>Default test runner.</em></li>
+    <li>Click <em>OK</em>.</li>
+</ol></p>
+
+<p><strong>Step 2 - Set default run configuration parameters for your project</strong></p>
+<p><ol>
+    <li>Type <strong>ctrl + alt + R</strong> to open the <em>Run</em> configuration selector.</li>
+    <li>Type <strong>0</strong>, or choose the first option (<em>Edit configurations...</em>) from the select list.</li>
+    <li>In the <em>Run</em> dialog, expand <em>Defaults > Python's test</em> and click on<em>py.test</em>.</li>
+    <li>Make sure the Python interpreter that you want to use for this project is selected for <em>Python interpreter</em>.
+    If you are using virtualenv you may have to configure a new Python interpreter for your virtualenv. More on that in a separate post.</li>
+    <li>Choose the root of your project for <em>Working directory</em>.</li>
+    <li>Click <em>Apply</em>, then <em>Close</em>.</li>
+</ol></p>
+
+<p><strong>Step 3 - Create a pytest.ini file in the root of your project</strong></p>
+<p>This is necessary to pass command line options to py.test. It would be nice if there were a way to do this via the IDE, but I was not able to do it. If anyone knows how, or can figure out how, to do that I'd love to know. I <em>was</em> able to pass a single option to the command line from PyCharm, but could not get it to work with multiple options.
+<ol>
+    <li>Create a file called <em>pytest.ini</em> in the root of your project.</li>
+    <li>Add the command line options you need into that file under the <em>[pytest]</em> section. See below for an example from <em>marketplace-tests.</em></li>
+    <li>Click <em>OK</em>.</li>
+</ol>
+<code>[pytest]
+addopts = --driver=firefox --credentials=mine/credentials.yaml --destructive</code></p>
+
+<p><strong>Step 4 - Create a copy of credentials.yaml in a personal folder</strong></p>
+<p>You are going to have to edit <em>credentials.yaml</em> to place some actual credentials in it, so in order to not have it overwitten each time you do a pull, you should put a copy that you are going to use somewhere else. I tend to create a <em>/mine</em> folder under the project root and place it there, but you can put it anywhere you like. You will notice that the command line option above uses that <em>/mine</em> folder to locate the credentials file.</p>
+
+<p><strong>Step 5 - Run your tests</strong></p>
+<p>With a file that contains tests open in an editor window, type <strong>ctrl + shift + R</strong> and PyCharm will run all of the tests in the file. If you wish to run just one test, type <strong>ctrl + alt + R</strong>, followed by <strong>0</strong> to open the <em>Edit configurations...</em> dialog and then place the name of your test in the <em>Keywords</em> input. Click <strong>Run</strong>.</p>

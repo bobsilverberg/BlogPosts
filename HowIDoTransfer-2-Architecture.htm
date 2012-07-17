@@ -1,0 +1,37 @@
+How I Use Transfer - Part II - Model Architecture
+
+I guess the first place to start is with the high level architecture of my model.  I have four types of objects in my model:
+
+<ul>
+	<li>Service Objects</li>
+	<li>Gateway Objects</li>
+	<li>Business Objects</li>
+	<li>Utility Objects</li>
+</ul>
+
+Note that these names are not necessarily the generally accepted or "proper" names for these types of objects in the Object Oriented community. These are terms that I have chosen to use, and I will define what I mean by them.
+  
+<h3>Service Objects</h3>
+These act as the API for my model.  My controller always talks to a Service Object to access the model.  If a controller needs the results of a query, which is defined in a Gateway Object, the controller must ask the Service for the query, and the Service then asks the Gateway.
+
+<h3>Gateway Objects</h3>
+Gateway Objects are used to retrieve multiple records from the database.  It's as simple as that.  So Gateways consist of methods which exectue and return SQL queries.  These are sometimes calls to stored procedures, sometimes hand-coded SQL, and oftentimes performed by Transfer either by List() methods or via TQL.
+
+<h3>Business Objects</h3>
+Business Objects represent the entities with which my application is concerned.  For the most part, Business Objects interact with a single record in a database table.  Most of my Business Objects are generated for me by Transfer, which means that each Business Object corresponds to a single database table.  Although that is true, I make extensive use of Transfer Decorators, which actually allow my Business Objects to interact with more than one database table.
+
+For example, I often create a method in a decorator which accesses a Service object, which then interacts with other Business Objects or Gateways.  Also, I create methods in decorators which access either the Parent or Children of the current object, so once again I'm not limited to dealing with just one database table within a Business Object.
+
+<h3>Utility Objects</h3>
+Utility Objects are not concerned with database access.  They perform utility functions, such as email, xml conversion, file handling, etc.  I include objects which help manage the model, such as a Bean Injector, a Transient Factory and Observers in this category as well.  It's basically a catch-all for any objects that do not fit into one of the three previous categories.
+
+<h3>Some Strategies</h3>
+
+I try to employ the following strategies when designing my app:
+<ul>
+	<li>Try to push the logic as deep into the model as possible.  This means that I try to keep my Controllers as "dumb" as possible.  They should just be talking to the Model via the Service Objects.  In turn, I try to keep these Service Objects as dumb as possible as well.  Any logic that can be placed in Business Objects gets put into my decorators.  The logic that remains in my Service Objects is generally about flow control and managing multiple Business Objects.</li>
+	<li>Create only as many objects as necessary.  I do not create one Service Object per Business Object.  Generally I'll create one Service Object per subject area (e.g., User, Order, Product, etc.), and that Service Object will be responsible for managing interactions with a number of Business Objects (e.g., User, UserGroup, Address, etc.).  From a Transfer standpoint, these subject areas are often also the packages that I define in my transfer.xml file.  I generally end up with one Gateway Object per Service Object.</li>
+	<li>Try to write as little code as possible (DRY).</li>
+</ul>
+
+I make extensive use of abstract classes to help me with that third strategy.  In fact, that is the topic of my next post.

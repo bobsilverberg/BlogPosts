@@ -1,0 +1,68 @@
+Connecting to Derby Databases on OS X using SQuirreLSQL
+
+Today I had a need to connect to and mess around with one of the <a href="http://db.apache.org/derby/" target="_blank">Derby</a> 
+databases that ships with ColdFusion. 
+I don't have RDS set up, plus I'm fairly certain that RDS does not allow you to modify data in tables, so I needed a solution.
+I had no idea where to start, so of course I simply Googled "derby database client tools" and one of the first links I saw was an article
+entitled <em><a href="http://db.apache.org/derby/integrate/SQuirreL_Derby.html" target="_blank">Using SQuirreL SQL Client with Derby</a></em>, by
+Susan Cline.
+I recalled that SQuirreLSQL is a client that runs on OS X, so I clicked.</p>
+<p>Boy was I glad that I did. The article covers just about everything you need to know to get up and running with Derby on OS X, and a whole lot more,
+and I highly recommend reading it.  If you don't feel like seeing the details, I've included a simple step-by-step guide below:
+<ol>
+	<li>Install SQuirreLSQL
+		<ol>
+			<li>Download SQuirreLSQL from the <a href="http://www.squirrelsql.org/#installation" target="_blank">downloads page</a>.
+				I clicked the link labelled <em>Install jars (and source) of SQuirreL 3.1 for MacOS X</em>.
+			</li>
+			<li>Open up a terminal window and change to the folder where the downloaded jar file is located.</li>
+			<li>Run the install package by typing the following command: 
+				<pre>java -jar squirrel-sql-3.1-MacOSX-install.jar</pre>
+				where <em>squirrel-sql-3.1-MacOSX-install.jar</em> is the name of the file you downloaded.</li>
+			<li>Tell the installer where to put the app file (I chose <em>/Applications/SQuirreLSQL.app</em>), and choose the plugins to install. 
+				I chose a whole bunch of plugins as I wanted to see what they do, but make sure you choose the <em>Derby</em> plugin.</li>
+		</ol>
+	</li>
+	<li>Configure SQuirreLSQL to Use Derby
+		<ol>
+			<li>Start SQuirreLSQL by running the app file that you just installed.</li>
+			<li>Click the <em>Drivers</em> tab.</li>
+			<li>You should see <em>Apache Derby Embedded</em> as one of the drivers listed. 
+				If it has a blue check mark beside it then SQuirreLSQL is ready to access Derby databases, and you can continue with 
+				<em>Configuring SQuirreLSQL to Use Your Database</em>, below.
+				On the other hand, if, like me, you see a red x beside it, then you need to continue with the following steps.
+			</li>
+			<li>Select <em>Apache Derby Embedded</em> in the list and click the pencil icon, which allows you to edit the driver.</li>
+			<li>Click the <em>Extra Class Path</em> tab and then click the <em>Add</em> button.</li>
+			<li>Browse to a folder that contains the <em>derby.jar</em> file. It should be located in the <em>/lib</em> folder of your ColdFusion server.
+				For example, on my machine it's in <em>/Developer/CF9/servers/cfusion/cfusion-ear/cfusion-war/WEB-INF/cfusion/lib</em>. 
+				Select the <em>derby.jar</em> file and click the <em>Choose</em> button.</li>
+			<li>Now click the <em>List Drivers</em> button which should populate the <em>Class Name</em> select box.</li>
+			<li>Select <em>org.apache.derby.jdbc.EmbeddedDriver</em> from the <em>Class Name</em> select box, and click the <em>OK</em> button.</li>
+			<li>You should be returned to the main SQuirreLSQL window and see the message 
+				<pre>Driver class org.apache.derby.jdbc.EmbeddedDriver successfully registered for driver definition: Apache Derby Embedded</pre>
+				at the bottom of the screen. The <em>Apache Derby Embedded</em> driver should now have a blue check mark beside it.
+			</li>	
+		</ol>
+	</li>
+	<li>Configuring SQuirreLSQL to Use Your Database
+		<ol>
+			<li>Click on the <em>Aliases</em> tab.</li>
+			<li>Click the blue <strong>+</strong> symbol to add an alias.</li>
+			<li>Give your alias a name. I chose the name of the database, so I put <em>cfartgallery</em> into the <em>Name</em> text box.</li>
+			<li>Choose <em>Apache Derby Embedded</em> from the <em>Driver</em> select box.</li>
+			<li>In the <em>URL</em> text box, replace the text &lt;database&gt; with the location of your database. 
+				I went to the datasource information in the ColdFusion Administrator and copied the contents of the <em>Database Folder</em>
+				text box from there.  The value I used was 
+				<pre>/Developer/CF9/servers/cfusion/cfusion-ear/cfusion-war/WEB-INF/cfusion/db/artgallery</pre>
+			</li>
+			<li>Check the <em>Auto logon</em> check box.</li>
+			<li>Click the <em>Test</em> button. You should see a dialog pop up saying "Connection successful".</li>
+			<li>Click the <em>OK</em> button. You should now be able to connect to the cfartgallery database!</li>
+		</ol>
+	</li>	
+</ol>
+</p>
+<p>Once again I just want to point out that all of this is covered by Susan Cline in her 
+<a href="http://db.apache.org/derby/integrate/SQuirreL_Derby.html" target="_blank">excellent guide</a>. 
+If by any chance she ever reads this, I'd like to thank her for this wonderful and well written resource.</p>

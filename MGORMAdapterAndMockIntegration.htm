@@ -1,0 +1,38 @@
+New Stuff for MXUnit, Model-Glue and ValidateThis on the Horizon
+
+<p>I've been extremely busy over the past couple of months on a number of projects, both for clients and open source, which has lowered my blog post output to approximately zilch.</p> 
+
+<p>I thought I would write a quick note about some items that I've been working on, and that should hopefully see the light of day in the ColdFusion open source world in the near future.</p>
+
+<h3>MXUnit Mocking Integration</h3>
+<p><a href="http://blog.mxunit.org/" target="_blank">Bill Shelton</a>, of <a href="http://www.mxunit.org/" target="_blank">MXUnit</a> fame, has written a mocking framework called <a href="http://sites.google.com/site/mightymock/" target="_blank">MightyMock</a>
+ that has been close to being released for quite some time. I've used it and I liked it a lot.
+Bill and I discussed integrating it with MXUnit itself, to make mocking super easy for developers using MXUnit, and during the discussions we realized that it would be nice if
+MXUnit could support generating mocks via any framework, not just MightyMock. I set out to build a plugin architecture that would allow for any ColdFusion based mocking framework to be used with MXUnit.
+Thus far I have it working with MightyMock, <a href="http://coldmock.riaforge.org/" target="_blank">ColdMock</a> and <a href="http://ortus.svnrepository.com/coldbox/trac.cgi/wiki/cbMockBox" target="_blank">MockBox</a>.
+ We're still working on the final bits and pieces, but if anyone is interested in giving it a try let me know and I can point you in the right direction.
+</p>
+<h3>Model-Glue ColdFusion 9 ORM Support</h3>
+<p>If you're a user of the <a href="http://www.model-glue.com/coldfusion.cfm" target="_blank">Model-Glue MVC Framework</a> you're probably aware of the fact
+that a couple of ColdFusion ORMs (namely <a href="http://www.transfer-orm.com/" target="_blank">Transfer</a> and <a href="http://trac.reactorframework.com/" target="_blank">Reactor</a>)
+can be used quite seamlessly with the framework via what's referred to as an ORM Adapter.  This allows Model-Glue developers to take advantage of Generic Database Messages (GDMs), which provide for automatic CRUD (creating, reading, updating and deleting records in database tables)
+as well as basic listings. These GDMs also form a part of a feature called Scaffolds, which takes the automation even further by generating view and controller code for maintaining database tables. Using Scaffolds you can get a complete CRUD solution up and running in a matter of minutes.</p>
+<p>With the release of ColdFusion 9 there's a new ORM player in the game, namely ColdFusion itself, with its new Hibernate integration. 
+<a href="http://blog.bullamakanka.net/" target="_blank">Dennis Clark</a> and I have been developing a Model-Glue ORM adapter for ColdFusion 9's built-in ORM and it is nearly ready to be released.
+If you are interested in taking a look at it, or willing to help with testing it, please let me know.</p>
+<p>The <a href="http://docs.model-glue.com/" target="_blank">Model-Glue Documentation</a> has more information available on both
+<a href="http://docs.model-glue.com/wiki/HowTos/HowToUseGenericDatabaseMessages" target="_blank">Generic Database Messages</a> and <a href="http://docs.model-glue.com/wiki/HowTos/HowToUseScaffolds" target="_blank">Scaffolds</a>.</p>
+<h3>ValidateThis CF9/ColdBox Sample Application</h3>
+<p><a href="http://www.aliaspooryorik.com/" target="_blank">John Whish</a> has been kind enough to contribute some bug fixes and enhancements to the <a href="http://www.validatethis.org/" target="_blank">ValidateThis</a> core,
+as well as the <a href="http://www.coldbox.org/" target="_blank">ColdBox</a> plugin. He's also been working on a ValidateThis/ColdBox 3/CF9 ORM sample application, which I plan to contribute to as well and should be made available in the near future.
+</p>
+<h3>ValidateThis CFWheels Integration</h3>
+<p><a href="http://www.henke.ws/" target="_blank">Mike Henke</a> and I have been working on getting ValidateThis to work with the <a href="http://cfwheels.org/" target="_blank">ColdFusion on Wheels framework</a>,
+ which just celebrated its <a href="http://cfwheels.org/blog/index.cfm/2009/11/24/Wheels-10-Were-Production-Ready" target="_blank">1.0 release</a>. 
+Although ValidateThis is designed to be totally framework agnostic (meaning it can be used with any framework without modification), because it is designed to validate ColdFusion objects, it relied on the fact that
+those objects would expose getters for each of their properties.  That is standard practice throughout most of the CF world, but Wheels is a bit different. Its objects do not have getters for their properties,
+so the server-side validations were unable to determine the values of any properties, which rendered them useless.</p>
+<p>Thanks to the encapsulation afforded by a decent object oriented design, I was able to enable
+ValidateThis to work with these new types of objects (which don't have getters) with a couple of minor code changes to the framework. 
+Mike and I now have a version of ValidateThis that works with traditional objects as well as with "Wheels style" objects. Mike is also working on a new ValidateThis sample application, using CFWheels.
+Once we're done testing and have a decent sample application this new version of ValidateThis will be released, along with the new sample.</p>

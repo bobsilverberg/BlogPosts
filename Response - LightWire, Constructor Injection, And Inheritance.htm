@@ -1,0 +1,7 @@
+Thanks for the informative article, Brad.  I've read discussions of constructor vs. setter injection before (mostly on mailing lists) and this is the first time I've read any arguments more concrete than "it's a matter of personal preference", so kudos.
+
+ Because I use Coldspring and I sometimes have circular dependencies I tend to always just use setter injection.  After reading your post I think that perhaps constructor injection would be more appropriate in many cases.
+
+Regarding your comment on transients and your model being tightly coupled to the ColdBox framework, could you not create your own Transient Factory, and then inject that into your services?  You could then just inject a dependency to the ColdBox framework into that Transient Factory, or perhaps you could even get a direct handle on LightWire without using the ColdBox framework (I know very little about ColdBox and arguably less about LightWire), and inject that into your Transient Factory.  Either way, your services are no longer coupled to either ColdBox or LightWire.  If you decide to change your DI engine in the future, or even dispense with a DI engine entirely, all you'd have to change is the Transient Factory.
+
+While we're on the subject, Paul Marcotte and I wrote a Generic Transient Factory that is quite flexible, although it does rely on ColdSpring to inject dependencies into transients.  I think he was planning a blog post about it, but got busy.

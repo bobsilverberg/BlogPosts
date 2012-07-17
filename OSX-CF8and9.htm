@@ -1,0 +1,66 @@
+Running Multiple Copies of ColdFusion MultiServer with Apache on OS X
+
+I've been trying, on and off, for nearly six months to get two versions of ColdFusion, CF 8 and CF 9, running in a MultiServer install of CF with JRun on my Mac.
+I've read all of the 
+documentation that is available, as well as a good number of blog posts, but I always seem to get stuck at the point of deploying my CF9 EAR into my existing copy of JRun 
+(which was installed during the MultiServer install of CF8). Everything I've read suggests that auto-deploy should work - you just copy your exploded EAR into a folder under JRun/servers/
+and JRun will deploy CF9 for you.  Well, for whatever reason, that simply does not work with my setup.  
+I also tried to manually deploy (in spite of there seeming to be zero documentation on how to do that), but still could not get my instance of CF9 to start up in JRun.</p>
+<p>After walking through all of the steps yet again yesterday, and coming up with the same result, I asked someone who in my mind is the most knowledgeable person about this topic,
+particularly when it comes to OS X, <a href="http://corfield.org/" target="_blank">Sean Corfield</a>. We discussed the steps I had taken, and he suggested that auto-deploy with JRun
+can be problematic. He then suggested a solution that worked perfectly for me, so I'm going to share it with you here.</p>
+<h3>The Reason</h3> 
+<p>Your first question might be, "Why do you want to do that anyway?". I have a set up where I'm using Apache with vhosts to run many different web applications each from their own url.
+This allows me to emulate a real production environment where each site has its own domain and runs out of the root. This is a pretty common setup and it works very well for me.
+I had this all working and configured just as I liked with CF8 and I wanted to add CF9 to the mix. Ideally I'd be able to run all of the sites via their Apache vhosts in CF9 as well.
+</p>
+<h3>The Solution</h3>
+<p>The solution that Sean proposed was to run two separate copies of ColdFusion MultiServer, one for CF8 and one for CF9. Whichever version I started would then be picked up by Apache
+and Apache would serve my site just as I expected.  This also means that I can have a single codebase for each site and still choose to run it either via CF8 or CF9.
+The only downside is that I cannot have CF8 and CF9 running simultaneously, but that's not something I need to do.</p>
+<p>The one potential gotcha with this approach is that the CFIDE folder, which in my case lives in /Library/Webserver/Documents/, is different for CF8 and CF9, but Sean gave me a great
+suggestion for dealing with that which I'll describe below.</p>
+<h3>Step-by-Step Guide</h3>
+<p>I'm going to walk through the steps that I took to get this set up. If you want to do the same the steps may not be identical, but hopefully you'll get what you need from this info.
+These steps assume that you already have a CF8 MultiServer install, which resides in /Applications/JRun4/ (which is the default install location).
+<ol>
+	<li>Make sure that CF8's JRun is stopped.</li>
+	<li>Rename your current JRun install folder. The CF9 installer will check to see if JRun is already installed in /Applications/JRun4/ and if it is it will not let you install CF9 in
+	MultiServer mode. Simply renaming the folder, e.g., to JRun_Saved, will eliminate that problem.</li>
+	<li>Rename you existing CFIDE folder so that it won't get overwritten with CF9's files. I renamed mine from CFIDE to CFIDE_CF8.</li>
+	<li>Backup your Apache httpd.conf file. The installer will make changes to this file that <em>may</em> break things. It's good to have a backup just in case.</li>
+	<li>Run the CF9 installer:
+		<ol>
+			<li>Choose Enterprise MultiServer configuration.</li>
+			<li>When it asks you "Is there already a multiserver configuration of Adobe ColdFusion 9, or Macromedia JRun 4,installed?", choose "No".</li>
+			<li>Choose the subcomponents that you want installed, and uncheck the "Start ColdFusion on system init" checkbox.</li>
+			<li>Choose an install directory that is not /Applications/JRun4. I used /Developer/CF9.</li>
+			<li>You can ask it to migrate your settings from your existing CF8 install, by pointing it to the renamed JRun4 folder (from step 1, above).</li>
+			<li>When it asks you to configure the webserver, add Apache as a web server and point it to your existing Apache config directory, which for me us /etc/apache2.</li>
+			<li>Allow it to install the CFIDE into Apache's web root, which for me is /Library/Webserver/Documents.</li>
+			<li>Provide passwords for CF admin, RDS, and your computer's admin.</li>
+			<li>Install the software.</li>
+		</ol>
+	</li>
+	<li>When the installation is done, if the installer didn't mess up your Apache config, you should be able to go straight to the CF9 Administrator to finish the set up.
+	In my case everything was fine and I was able to do this. If you run into issues getting the CF9 Administrator working you might want to compare your backed up copy of httpd.conf
+	to the current copy that the installer edited, and you may have to do some manual cleanup. Once you are able to launch the CF9 Administrator you'll know that you now have a working
+	copy of CF9 being served by Apache.</li>
+	<li>Stop CF9's Jrun.</li>
+	<li>Rename the CFIDE folder that was just installed to identify it as the CFIDE for CF9. I call mine CFIDE_CF9.</li> 
+	<li>Set up commands to start CF8 and CF9. In addition to starting JRun these commands should also move the appropriate version of the CFIDE folder into CFIDE and then
+	move it back when you stop JRun. I added a couple of aliases to my .bash_profile to do this.  I show them below:</li>
+</ol>
+alias cf8="cd /Library/Webserver/Documents/;
+	mv CFIDE_CF8 CFIDE;
+	/Applications/JRun4/bin/jrun -start cfusion;
+	mv CFIDE CFIDE_CF8;
+	cd ~;"
+alias cf9="cd /Library/Webserver/Documents/;
+	mv CFIDE_CF9 CFIDE;
+	/Developer/CF9/bin/jrun -start cfusion;
+	mv CFIDE CFIDE_CF9;
+	cd ~;"</code></p>
+<p>Note that all of the code for each alias appears on a single line in my .bash_profile, I've just split them up here for display purposes. Now when I want to use CF8 
+I just open a terminal window and type "cf8", and when I want to use CF9 I just open a terminal window and type "cf9". Whichever one I'm using, all of my Apache vhosts work with it.</p>
+<p>So far this is working really well for me, so I really want to thank <a href="http://corfield.org/" target="_blank">Sean</a> for the time he took to discuss this problem and solution with me.</p>

@@ -1,0 +1,6 @@
+Sava CMS is Now Mura CMS
+
+Just wanting to spread the word that the fine folks at <a href="http://www.blueriver.com/go/br/" target="_blank">Blue River Interactive Group</a> have been moved to <a href="http://www.gosava.com/go/sava/blog/sava-cms-has-a-new-name-mura-cms/" target="_blank">change the name</a><> of their free open-source ColdFusion CMS from Sava CMS to Mura CMS.
+<p>I have been working with Sava for the past month or so, and have been very impressed.  It seems like a very solid, full-featured product, and the new plug-in architecture makes integrating external code a breeze.  I was tasked with taking a fairly large legacy Fusebox application (it's been incrementally developed for the past six years or so) and finding a way to use most of its features from within Sava.</p>
+<p>With a bit of help and support from Matt Levine, I was able to use the new plug-in architecture to accomplish that feat, without having to touch any of the existing CMS code.  Now that's extensibility!</p>
+<p>I plan to write more in the future about what I've been doing with Sava, with a particular focus on integrating existing code with it.  If you're looking for a ColdFusion CMS I highly recommend checking it out.</p>

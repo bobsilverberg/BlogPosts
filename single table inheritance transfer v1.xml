@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transfer xsi:noNamespaceSchemaLocation="http://www.transfer-orm.com/transfer/resources/xsd/transfer.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <objectDefinitions>
+        <package name="employee">
+            <object name="Developer" table="tblEmployee" decorator="model.Developer">
+                <compositeid>
+   					<property name="userName" />
+   					<manytoone name="EmployeeType" />
+				</compositeid>
+                <property name="userName" type="string" />
+                <property name="firstName" type="string" />
+                <property name="lastName" type="string" />
+                <property name="FavouriteLanguage" type="string" />
+                <property name="enjoysDeathMetal" type="boolean" />
+                <manytoone name="EmployeeType">
+                    <link to="employee.EmployeeType" column="employeeTypeId"/>
+                </manytoone>
+            </object>
+            <object name="Designer" table="tblEmployee" decorator="model.Designer">
+                <compositeid>
+   					<property name="userName" />
+   					<manytoone name="EmployeeType" />
+				</compositeid>
+                <property name="userName" type="string" />
+                <property name="firstName" type="string" />
+                <property name="lastName" type="string" />
+                <property name="FavouriteColour" type="string" />
+                <property name="toleratesDevelopers" type="boolean" />
+                <manytoone name="EmployeeType">
+                    <link to="employee.EmployeeType" column="employeeTypeId"/>
+                </manytoone>
+            </object>
+            <object name="Analyst" table="tblEmployee" decorator="model.Analyst">
+                <compositeid>
+   					<property name="userName" />
+   					<manytoone name="EmployeeType" />
+				</compositeid>
+                <property name="userName" type="string" />
+                <property name="firstName" type="string" />
+                <property name="lastName" type="string" />
+                <property name="levelOfAttentionToDetail" type="string" />
+                <property name="totalPagesOfRequirementsProduced" type="numeric" />
+                <manytoone name="EmployeeType">
+                    <link to="employee.EmployeeType" column="employeeTypeId"/>
+                </manytoone>
+            </object>
+            <object name="EmployeeType" table="tblEmployeeType">
+                <id name="employeeTypeId" type="numeric" />
+                <property name="name" type="string" />
+                <property name="description" type="string" />
+            </object>
+        </package>
+    </objectDefinitions>
+</transfer>

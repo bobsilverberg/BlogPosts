@@ -1,0 +1,230 @@
+Getting Started with WebDriver
+
+A few weeks ago during <a href="http://groups.google.ca/group/mxunit/browse_thread/thread/88d9b33328fed9c5" target="_blank">MXUnit Office Hours</a>,
+<a href="http://blog.billshelton.me/" target="_blank">Bill Shelton</a> demonstrated using WebDriver to create functional tests in Java.
+It was a pretty cool demo and I meant to give it a whirl for a while, but only got around to doing it this weekend.  I had to refer
+back to the <a href="http://experts.na3.acrobat.com/p75397469/" target="_blank">recording of the session</a> a number of times,
+so I thought it would be worthwhile to document the steps to get a project
+up and running in Eclipse that uses WebDriver. Let's start with some background.</p>
+<h3>What is WebDriver?</h3>
+<p>WebDriver is a tool that allows you to write code, in a number of languages, that automates a browser and allows you to interrogate
+what is rendered by the browser. You can use these features to created automated tests of a web application.
+You may be familiar with a tool called Selenium, which does similar things, but works within the context of a web browser itself.
+The Selenium project and the Webdriver project are merging to create Selenium 2.0. That project is a work in progress, but there's 
+nothing to stop you from experimenting with WebDriver right now.</p>
+<p>For a bit more of an official definition, here's some info from the Selenium 2.0 and WebDriver page at SeleniumHQ:</p>
+<blockquote>
+	<p>
+		WebDriver is a tool for automating testing web applications, and in particular to verify that they work as expected.
+		It aims to provide a friendly API that’s easy to explore and understand, which will help make your tests easier to read and maintain.
+		It’s not tied to any particular test framework, so it can be used equally well with JUnit, TestNG or from a plain old “main” method.
+	</p>
+	<p>
+		WebDriver uses a different underlying framework from Selenium’s javascript Selenium-Core.
+		It also provides an alternative API with functionality not supported in Selenium-RC.
+		WebDriver does not depend on a javascript core embedded within the browser, therefore it is able to avoid some long-running Selenium limitations.
+	</p>
+	<p>
+		WebDriver’s goal is to provide an API that establishes
+		<ul>
+			<li>A well-designed standard programming interface for web-app testing.</li>
+			<li>Improved consistency between browsers.</li>
+			<li>Additional functionality addressing testing problems not well-supported in Selenium 1.0.</li>
+		</ul>
+	</p>
+</blockquote>
+<p>I hope to write a number of posts about working with WebDriver. This first post will be a quick guide to setting up an Eclipse project and getting WebDriver to
+interact with a web page. Let's get started.</p>
+<h3>Create a Java Project</h3>
+<p>We're going to be writing Java code to drive WebDriver, so the first thing we need is a new Java project. Before starting this investigation I had written a grand total
+of 0 lines of Java code in Eclipse, so I didn't have a clue where to start. Luckily, as I mentioned in the opening, Bill demonstrated all of the steps for us in his presentation
+during MXUnit Office Hours, so I was able to just copy his steps.
+<ol>
+	<li>Open Eclipse (or CFBuilder, which I'm sure you know <em>is</em> Eclipse).</li>
+	<li>From the menu choose <em>File</em>, <em>New</em>, <em>Project...</em></li>
+	<li>
+		In the folder <em>Java</em>, choose <em>Java Project</em>.
+		<img src="/images/webdriver-newproject0.5.jpg" class="float=left" />
+	</li>
+	<li>
+		Give your project a name, accept the rest of the defaults, and click <em>Next</em>.
+		<img src="/images/webdriver-newproject1.jpg" class="float=left" />
+	</li>
+	<li>
+		Accept the defaults and click <em>Finish</em>.
+		<img src="/images/webdriver-newproject2.jpg" class="float=left" />
+	</li>
+</ol>
+</p>
+<h3>Add the WebDriver jar files to your project</h3>
+<p>Next we need to add the jar files that are required by WebDriver to our project. We'll start by downloading them.
+<ol>
+	<li>Go to the <a href="http://code.google.com/p/selenium/downloads/list" target="_blank">Selenium Google Code Page</a></li>
+	<li>
+		From the sidebar labelled <em>Featured downloads</em>, choose the Selenium Java zip. As of this writing the file is called <em>selenium-java-2.0a4.zip</em>.
+		That will take you to the page for the download itself.
+	</li>
+	<li>Click on the filename to download the zip to your machine.</li>
+	<li>
+		Unzip the files into the project that you just created. Bill suggested creating a folder under the project root called <em>/lib</em>,
+		and then a folder underneath that called <em>selenium-jars</em> and placing the files there.</li>
+	<li>
+		Back in Eclipse, right click on your project in the Package Explorer and choose <em>Build Path</em>, 
+		<em>Configure Build Path...</em>.
+	</li>
+	<li>Choose the <em>Libraries</em> tab, if it isn't already selected.</li>
+	<li>Click <em>Add Jars...</em></li>
+	<li>
+		Select all of the jars that you just unzipped into the <em>/lib/selenium-jars/</em> folder and click <em>OK</em>. 
+		Your Java Build Path dialog should look something like this:
+		<img src="/images/webdriver-buildpath.jpg" class="float=left" />
+	</li>
+	<li>
+		Choose the primary selenium jar, which in this example is <em>selenium-java-2.0a4.jar</em>, click the down triangle and double-click on <em>Javadoc location</em>.
+		Adding a Javadoc location will add help information to code assist.
+		<img src="/images/webdriver-addjavadoc1.jpg" class="float=left" />
+	</li>
+	<li>
+		Enter the location for the Selenium JavaDocs into the <em>Javadoc location path</em> field. The current location is
+		<em>http://selenium.googlecode.com/svn/trunk/docs/api/java/index.html</em>.
+		<img src="/images/webdriver-addjavadoc2.jpg" class="float=left" />
+	</li>
+	<li>Click <em>OK</em> and then <em>OK</em> again. Your project is now ready to use the WebDriver API.</li>
+	<li>Add JUnit into the project</li>
+	<li>Right click on your project and choose Build Path -> Add Libraries...</li>
+	<li>Choose JUnit, click Next, choose JUnit4, click Finish</li>
+	<li>Add a package: Right click on the src folder, choose New -> Package</li>
+	<li>Call it test and click finish</li>
+	<li>Add a JUnit test: Right click on the src test package, choose New -> JUnit Test Case</li>
+</ol>
+</p>
+http://experts.na3.acrobat.com/p75397469/
+
+Selenium HQ: Main Site for Selenium: http://seleniumhq.org/
+Webdriver info on Selenium HQ: http://seleniumhq.org/docs/09_webdriver.html
+
+Source code: http://code.google.com/p/selenium/
+current download: selenium-java-2.0a4.zip
+
+getting started guide: http://code.google.com/p/selenium/wiki/GettingStarted
+
+Google Code search that Bill showed - what's the link?
+
+JavaDocs: http://selenium.googlecode.com/svn/trunk/docs/api/java/index.html
+
+<ol>
+	<li>From the menu choose File -> New -> Java Project...</li>
+	<li>Accept defaults and click Next</li>
+	<li>Accept defaults and click Finish</li>
+	<li>Right click on your project and choose New - Folder</li>
+	<li>Name the folder <b>lib</b></li>
+	<li>Create a folder under lib called <b>selenium-jars</b> and extract the contents of the zip file into that folder</li>
+	<li>Right click on your project and choose Build Path -> Configure Build Path...</li>
+	<li>Choose the Libraries tab</li>
+	<li>Click Add Jars...</li>
+	<li>Select all of the jars that you just added into the /lib/selenium-jars/ folder and click OK</li>
+	<li>Choose the primary selenium jar, which is ???, click the down triangle and add a JavaDoc location (to enable code assist)</li>
+	<li>Add JUnit into the project</li>
+	<li>Right click on your project and choose Build Path -> Add Libraries...</li>
+	<li>Choose JUnit, click Next, choose JUnit4, click Finish</li>
+	<li>Add a package: Right click on the src folder, choose New -> Package</li>
+	<li>Call it test and click finish</li>
+	<li>Add a JUnit test: Right click on the src test package, choose New -> JUnit Test Case</li>
+</ol>
+<code>
+package test;
+
+import org.junit.Test;
+
+
+public class SimpleGoogleTest {
+
+	@Test
+	public void foo(){
+		
+	}
+}
+</code>
+
+- run it: Shift-command-F11
+- green = ok!
+
+- add code for WebDriver driver;
+- eclipse allows you to import it with a simple click
+
+- add more code:
+
+<code>
+package test;
+
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+
+public class SimpleGoogleTest {
+
+	FirefoxDriver driver;
+	WebElement e;
+	
+	@Test
+	public void getMXUnit(){
+		driver = new FirefoxDriver();
+		driver.get("http://google.com");
+		e = driver.findElement(By.name("q"));
+		e.sendKeys("MXUnit");
+	}
+}
+
+</code>
+
+- run it
+- firefox will create a new profile for WebDriver, so it may take a few seconds to load, but you should see firefox pop up with google's home page loaded
+
+- add a line for:
+		driver.findElement(By.name("btnG")).click();
+- now it actually does the search
+
+Another topic
+- you can record in Selenium IDE and export to webdriver-backed Java (e.g., JUnit)
+
+OK, so that's not really a test - we're just controlling the browser.  Let's create a new actual JUnit test...
+
+<code>
+	@Test
+	public void linkFromMXUnitHomePageShouldGoToWiki() {
+		driver = new FirefoxDriver();
+		System.setProperty("webdriver.firefox.useExisting","true");
+		driver.get("http://mxunit.org/");
+		Assert.assertTrue(driver.isJavascriptEnabled());
+		WebElement e = driver.findElement(By.linkText("Docs"));
+		e.click();
+		Assert.assertEquals("http://wiki.mxunit.org/display/default/MXUnit+Documentation", driver.getCurrentUrl());
+		
+		driver.quit();
+		
+	}
+</code>
+
+42:00 into the recording, Bill's starting to talk about a Page Object
+- allows you to test page objects, rather than using the driver directly
+
+talk of integrating into MXUnit - remote invocation method
+
+
+
+I'm in the process of creating a roadmap for future development of ValidateThis, my validation framework for ColdFusion objects. I am discussing the roadmap with interested parties
+via the new <a href="http://groups.google.ca/group/validatethis-dev" target="_blank">ValidateThis-dev</a> google group, so if you're interested in having any input, or just following
+along, I welcome you to join that group.</p>
+<p>One item that appears on the roadmap is improving the documentation for the framework. There is quite a lot of documentation already available on the 
+<a href="http://www.validatethis.org/docs/" target="_blank">ValidateThis wiki</a> (thanks to the <a href="http://www.codexwiki.org/" target="_blank">CodexWiki</a> team for the tool), 
+but I know that there are some holes.  I'm going to try to shore up the docs over the next while, but in the meantime I figured I might as well generate some JavaDoc-style
+API documentation for the framework using <a href="http://www.compoundtheory.com/?action=colddoc.index" target="_blank">ColdDoc</a>, so that's what I've now done. 
+You can find the API docs at <a href="http://www.validatethis.org/docs/api/" target="_blank">www.validatethis.org/docs/api/</a>. 
+I'd like to thank <a href="http://www.compoundtheory.com/" target="_blank">Mark Mandel</a> for yet another 
+rockin' ColdFusion open source tool (ColdDoc), which made this process oh so easy.</p>
+<p>As always, the latest code is available from <a href="http://validatethis.riaforge.org/" target="_blank">the ValidateThis RIAForge site</a>,
+and if you have any questions about the framework, or suggestions for enhancements, 
+please send them to the <a href="http://groups.google.com/group/validatethis" target="_blank">ValidateThis Google Group</a>.
+</p>

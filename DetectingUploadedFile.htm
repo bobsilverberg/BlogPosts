@@ -1,0 +1,19 @@
+Detecting That A Form Field Contains a File
+
+I've been experimenting with a scheme to allow for automatic uploading of files as part of an MVC framework, so one of my goals was to figure out if I could take a form submission and detect which fields contain files that need to be uploaded. I took a look at all of the internal debug info I could find via cfdump, but I couldn't see anything that would help me. I did come up with a solution, but it's a bit hacky. It works fine on my Mac, running a local copy of CF9, and I'm pretty sure it would work on any server, but I'm not positive.</p>
+<p>It involves simply looking at the contents of the form fields, and then checking to see if a field contains what appears to be a path to a file that was sent via an http post. If you've ever looked at the contents of a form field that was used to upload a file you've probably seen something like this:
+<code>/Applications/ColdFusion9/runtime/servers/coldfusion/SERVER-INF/temp/wwwroot-tmp/neotmp5525833397621722812.tmp</code></p>
+<p>The contents of the form field points to a temporary location on your server where the file is stored.  When you use cffile action="upload" it doesn't actually upload the file, it simply copies it from that temporary location to a location that you specify. So we can use this information, in conjunction with the ColdFusion built-in function <em>getTempDirectory()</em> to try to guess whether a form field contains a file. here's some sample code that will try to identify form fields that contain uploaded files:
+<code>
+<cfscript>
+	tempDir = getTempDirectory();
+	for (fld in form) {
+		if (REFindNoCase("^" & tempDir, form[fld])) {
+			writeOutput("The field #fld# contains a file!");
+		}
+	}
+</cfscript>
+</code>
+</p>
+<p>As you van see, we're simply checking to see whether the beginning of the contents of the form field are the same as the temp folder for the ColdFusion server. Obviously it won't be 100% reliable. It's possible (although highly unlikely) that someone could place a value in a form field that would contain the path to your temporary folder. In that case when the routine tried to upload the file it would fail, and of course that routine would be wrapped in a try/catch anyway, so it shouldn't have any negative effect on your application.</p>
+<p>As I said above, it seems to work reliably on my machine, but I don't know if it will work on other platforms. If anyone reading this is willing to try it on Windows and Linux, and report back the results, that would be appreciated. Also, if anyone knows of a better way of doing this I'd be interested to hear about it.</p>

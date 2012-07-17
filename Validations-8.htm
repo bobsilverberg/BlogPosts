@@ -1,0 +1,130 @@
+Performing Server Side Validations Using Objects
+
+I'm going to continue my series about object oriented validations with ColdFusion by looking at the approach that I've taken to performing server side validations.  I discussed the architecture for server side validations in a <a href="http://www.silverwareconsulting.com/index.cfm/2008/10/14/ValidateThis--Server-Side-Validation-Architecture">previous article</a>, so now I want to get down to the nitty gritty of how the actual validations are performed, looking at the code involved.</p>
+<p>I'm going to do this in the context of discussing how I added generic regex support to the framework. I want to thank <a href="http://www.quackfuzed.com/" target="_blank">Matt Quackenbush</a>, my regex mentor, for helping me with the required syntax, and with an example for the <a href="http://www.validatethis.org" target="_blank">demo application</a>.</p>
+<p>Because one of the <a href="http://www.silverwareconsulting.com/index.cfm/2008/10/6/ValidateThis--An-Object-Oriented-Approach-to-Validations">design goals</a> I had for the framework was the ability to add new validation types without having to touch any of the existing code, adding regex support was a piece of cake.  Here's how I wanted this new <em>regex</em> validation type to work:
+<ul>
+	<li>A developer can create a validation rule for an object property of type <em>regex</em>.</li>
+	<li>The developer can then either:
+		<ul>
+			<li>Specify a single <em>regex</em> parameter, which will be used on both the client and the server.</li>
+			<li>Specify both a <em>clientregex</em> and a <em>serverregex</em> parameter, which will be used accordingly.  This will allow a developer to take advantage of ColdFusion regex syntax that would not be valid in JavaScript.</li>
+		</ul>
+	</li>
+	<li>When processing validations, either on the client or the server, the contents of the specified property will be tested against the specified regex, and if no match is found the validation will fail.</li>
+</ul>
+<more/>
+In order to implement this new validation type I had to create two new files, a Server Rule Validator and a <a href="http://www.silverwareconsulting.com/index.cfm/2008/10/21/ValidateThis--Client-Side-Validation-Architecture">Client Rule Scripter</a>. Because the focus of this post is server side validations I'm only going to look at the Server Rule Validator for now.</p>
+<p>
+As discussed in a <a href="http://www.silverwareconsulting.com/index.cfm/2008/10/14/ValidateThis--Server-Side-Validation-Architecture">previous article</a>, a Server Rule Validator implements the actual logic for testing a property against a validation rule type.  I had already written a number of these (e.g., Required, Email, RangeLength, etc.), so I just took an existing one and made a few edits.  Here's what ServerRuleValidator_Regex.cfc looks like:
+<code>
+<cfcomponent output="false" name="ServerRuleValidator_Regex"
+	extends="AbstractServerRuleValidator">
+
+	<cffunction name="validate" returntype="any" access="public">
+		<cfargument name="valObject" type="any" required="yes" />
+
+		<cfset var Parameters = arguments.valObject.getParameters() />
+		<cfset var theRegex = "" />
+		<cfset var theValue = arguments.valObject.getObjectValue() />
+		<cfif StructKeyExists(Parameters,"serverRegex")>
+			<cfset theRegex = Parameters.serverRegex />
+		<cfelseif StructKeyExists(Parameters,"regex")>
+			<cfset theRegex = Parameters.regex />
+		<cfelse>			
+			<cfthrow errorcode="validatethis.ServerRuleValidator_Regex.missingParameter"
+			message="Either a regex or a serverRegex parameter must be defined for a regex rule type." />
+		</cfif>
+		<cfif Len(theValue) AND REFind(theRegex,theValue) EQ 0>
+			<cfset fail(arguments.valObject,"The #arguments.valObject.getPropertyDesc()# must match the specified pattern.") />
+		</cfif>
+	</cffunction>
+	
+</cfcomponent>
+</code>
+</p>
+<p>Let's walk through this code.  First off, you'll notice that this cfc extends an AbstractServerRuleValidator, so we'll take a look at that in a moment.</p>
+<p>Next, you'll see that the validate method expects a Validation object.  I discussed that in an <a href="http://www.silverwareconsulting.com/index.cfm/2008/10/14/ValidateThis--Server-Side-Validation-Architecture">earlier blog post</a>, but basically each validation rule that you define becomes an object when the server side validations are done.  That object will contain all of the metadata about the validation rule, and will also have the actual Business Object composed into it, which allows for access to that Business Object's properties.</p>
+<p>Continuing with the code, we get the <em>Parameters</em> struct from the Validation object, which should include either a <em>regex</em> key or a <em>serverRegex</em> key.  If neither of those are found an error is thrown.  We also need to get the value of the property for which this rule was defined, which is done by calling the <em>getObjectValue</em> method of the Validation object.  We'll take a look at that in a moment as well.</p>
+<p>Now that we have all of the information we need, the actual test is performed.  We check that there is something to validate, which allows for an empty field to pass a regex validation, and if there is a value an REFind is performed to determine whether the contents of the property match the specified regex.  Matt suggested that this approach be taken, rather than using isValid, based on his experience with isValid which he documented in a <a href="http://www.quackfuzed.com/index.cfm/2008/7/15/isValid-Bug" target="_blank">blog post</a>.</p>
+<p>If the validation fails, then the <em>fail</em> method is called to register that.  We are passing a generic failure message to the <em>fail</em> method, but in the context of this validation type (regex) one would usually override that generic failure message with a custom one in the rule definition.  As you might guess, the <em>fail</em> method is contained in the AbstractServerRuleValidator, so let's look at that next:
+<code>
+<cfcomponent output="false" name="AbstractServerRuleValidator">
+
+<cffunction name="init" returnType="any" access="public">
+	<cfreturn this />
+</cffunction>
+	
+<cffunction name="validate" returntype="void" access="public">
+	<cfargument name="valObject" type="any" required="yes" />
+	<cfthrow errorcode="validatethis.AbstractServerRuleValidator.methodnotdefined"
+		message="I am an abstract object, hence the validate method must be overriden in a concrete object." />
+</cffunction>
+	
+<cffunction name="fail" returntype="void" access="private">
+	<cfargument name="valObject" type="any" required="yes" />
+	<cfargument name="FailureMessage" type="any" required="yes" />
+	
+	<cfset arguments.valObject.setIsSuccess(false) />
+	<cfset arguments.valObject.setFailureMessage(arguments.FailureMessage) />
+</cffunction>
+
+</cfcomponent>
+</code>
+</p>
+<p>The <em>init</em> and <em>validate</em> methods are self-explanatory, so let's just look at the <em>fail</em> method. Because the behaviour that occurs when a validation fails is always the same, I have encapsulated this logic into the abstract object which forms the base for all of the concrete Server Rule Validators. When a validation fails the <em>IsSuccess</em> property of the Validation object is set to <em>false</em> and the failure message generated by the <em>validate</em> method is placed in the <em>FailureMessage</em> property.  Now the Validation object knows everything that it needs to know about the result of the validation attempt.
+</p>
+<p>The next piece of the puzzle is the Validation object itself. It contains three methods that "do something", and a whole load of getters and setters. We'll just look at the former:
+<code>
+<cffunction name="init" access="Public" returntype="any">
+	<cfargument name="theObject" type="any" required="yes" />
+	<cfset variables.theObject = arguments.theObject />
+	<cfreturn this />
+</cffunction>
+
+<cffunction name="load" access="Public" returntype="any">
+
+	<cfargument name="ValStruct" type="any" required="yes" />
+
+	<cfset variables.instance = Duplicate(arguments.ValStruct) />
+	<cfset variables.instance.IsSuccess = true />
+	<cfset variables.instance.FailureMessage = "" />
+	<cfreturn this />
+
+</cffunction>
+
+<cffunction name="getObjectValue" access="public" returntype="any">
+	<cfset var theValue = "" />
+	<cfset var propertyName = getPropertyName() />
+	<cfif StructKeyExists(variables.theObject,"get#propertyName#")>
+		<cftry>
+			<cfinvoke component="#variables.theObject#"
+				method="get#propertyName#" returnvariable="theValue" />
+			<cfcatch type="any"></cfcatch>
+		</cftry>
+		<cfreturn theValue />
+	<cfelse>
+		<cfthrow errorcode=errorcode="validatethis.propertyNotFound"
+			message="The property #propertyName# was not found in the object." />
+	</cfif>
+</cffunction>
+</code>
+</p>
+<p>For each validation rule that must be processed, the Server Validator (which I'll discuss in a moment) creates a Validation Object.  To limit the number of actual objects that needs to be created, the Server Validator actually only creates one Validation object, and passes the Business Object itself into the <em>init</em> method.  This gives the Validation Object access to the Business Object's properties. As the Server Validator processes each subsequent validation rule, it loads each one into the existing Validation Object, which is what the <em>load</em> method is for.</p>
+<p>The <em>getObjectValue</em> method is a shortcut that allows the ValidationObject to get the contents of the property that corresponds to the current validation rule. First it gets the propertyName from the metadata that was loaded into the Validation object.  It then checks to make sure that a method exists in the Business Object that will return the contents of that property.  The attempt to retrieve that value using that method is wrapped in a try/catch because it is possible that the method could throw an error, for example if one is asking for a composed object from a Transfer decorator but the composed object hasn't been loaded yet. If the cfinvoke fails, an empty string is returned, otherwise the value of the property is returned.  If no method can be found that corresponds to the property then an error is thrown.  You can see how the <em>getObjectValue</em> method is used in the code for the ServerRuleValidator_Regex object above.</p>
+<p>The final piece of the server side validation puzzle is the Server Validator itself. Its <em>validate</em> method does a whole bunch of things, including dealing with conditional validations, custom failure messages, and packaging up the final result.  I think this post is already long enough, so I'm going to leave a discussion of the internals of that method to a future post.  If it isn't already clear from what I've written above, the Server Validator basically does this:
+<ol>
+	<li>Asks the Business Object for its validation rules.</li>
+	<li>Loops through those rules, conditionally creating a Validation object for each rule.</li>
+	<li>Asks an appropriate Server Rule Validator (such as the one documented above) to perform a validation using the Validation object.</li>
+	<li>Asks the Validation object whether the validation passed, and if not, what default message to use.</li>
+	<li>Packages the results (pass or fail, plus any failure messages) and makes them available to the object that called it.</li>
+</ol>
+</p>
+<p>Getting back to the point of this post, I hope that I have demonstrated two things:
+<ol>
+	<li>To add a new validation type I only had to create one file (for the server side), which involved writing around half a dozen lines of code, and most of that code dealt with parameters specific to this validation type.</li>
+	<li>The framework code itself is actually quite simple and there's not that much of it.</li>
+</ol>
+</p>
+<p>I will continue with the discussion of the Server validator, and also discuss the other file (Client Rule Scripter) in future posts.</p>

@@ -1,0 +1,36 @@
+Using Git Rebase to Squash Commits
+
+A Git command that can be very useful, yet is often overlooked by beginners (such as myself) is the <em>rebase</em> command.
+I admit to not fully understanding all of its uses, but there is one simple use for it that I have found myself taking advantage of lately.
+Here's the scenario:</p>
+<p>You have a remote Git repository, perhaps hosted at <a href="https://github.com/" target="_blank">GitHub</a>. You want to work on a
+new feature, so you create a local branch on your machine: <code>git checkout -b newBranch</code></p>
+<p>You make some changes and commit them to the local branch: <code>git commit -a -m"My first set of changes"</code></p>
+<p>You make some more changes and commit them to the local branch: <code>git commit -a -m"My second set of changes"</code></p>
+<p>You make some more changes and commit them to the local branch: <code>git commit -a -m"My third set of changes"</code></p>
+<p>You now have three separate commits that relate to one feature, and the feature is complete. You could simply push the changes to your remote,
+but then you'd end up with three commits on the remote that are not particularly meaningful. The only reason you have three commits in your local repo is
+that you completed the work in three steps. Perhaps you'd rather have just one commit reported in the remote repo for this feature. Thankfully <em>git rebase</em> 
+allows you to do that very simply. If you issue a <em>git log</em> command, you'll see something similar to this:</p>
+<img src="/images/git-log.jpg" class="float=left" />
+<p>I can see from this that I have three commits corresponding to the changes that I made for the feature. To squash these three commits into one, and specify a
+commit message for the group, I can use <em>git rebase</em>, with the <em>-i</em> (which stands for <em>interactive</em>), argument:
+<code>git rebase -i HEAD~3</code></p>
+<p>The <em>HEAD~3</em> tells git that I want to rebase the past three commits.</p>
+<p>This will pop open my text editor, which I have 
+<a href="http://www.silverwareconsulting.com/index.cfm/2010/6/3/Using-TextMate-as-the-Default-Editor-for-Git-on-OS-X" target="_blank">configured to be TextMate</a>, 
+with some rebasing instructions. The file will looks something like this:</p>
+<img src="/images/git-rebase-1.jpg" class="float=left" />
+<p>This is quite convenient as git actually provides you with some instructions. We want to combine the second and third commit with the first, so we'll edit the file to look like this:</p>
+<img src="/images/git-rebase-2.jpg" class="float=left" />
+<p>When we save and close the file, git will pop open another file in the editor to edit our commit message:</p>
+<img src="/images/git-rebase-3.jpg" class="float=left" />
+<p>From here we can either choose to accept the three individual commit messages that were picked up from our three commits, or we can remove them (or comment them out) 
+and provide our own commit message. When we save and close this file we'll be back at the command line with a message similar to this:</p>
+<img src="/images/git-rebase-4.jpg" class="float=left" />
+<p>We can now merge these changes back into the master branch:</p>
+<img src="/images/git-rebase-5.jpg" class="float=left" />
+<p>Now if we issue the <em>git log</em> command again, we'll see our previous three commits squashed into one:</p>
+<img src="/images/git-rebase-6.jpg" class="float=left" />
+<p>It's as simple as that. Now you do need to be careful using the <em>rebase</em> command with remotes when you are collaborating with others. You should never
+rebase commits that have already been pushed to a remote.  This is also a lot more to rebasing than this simple example, but it's not a bad place to start. Happy rebasing!</p>

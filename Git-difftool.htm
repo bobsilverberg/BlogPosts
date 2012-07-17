@@ -1,0 +1,35 @@
+Comparing Files from Different Branches with Git Difftool
+
+As a relative newcomer to Git one of the things I've struggled most with is how to compare files from different branches. 
+The challenge comes from the fact that, from the perspective of the file system, two branches cannot exist at the same time.
+When you switch from one branch to another the new branch replaces the old branch, so you cannot use a native file compare tool to compare two sets
+of files, as there really is only one set of files at any point in time. Now I admit that I might be totally wrong about this, 
+and I'm sure that there are other, perhaps better, solutions to the issue, but the one that works for me currently is <em>git difftool</em>.
+<h3>What is Git Difftool?</h3>
+<p>According to the <a href="http://www.kernel.org/pub/software/scm/git/docs/git-difftool.html" target="_blank">man page for git-difftool</a>,
+	<blockquote>
+		<p>
+			<em>git difftool</em> is a git command that allows you to compare and edit files between revisions using common diff tools.
+			<em>git difftool</em> is a frontend to <em>git diff</em> and accepts the same options and arguments.</p>
+	</blockquote>
+	I've tried using <em>git diff</em> in the past and, after spending years working with a wonderful tool like Subclipse's <em>Synchronize with Repository</em>,
+	I just did not enjoy the output of <em>git diff</em> at all.
+</p>
+<p>Luckily, <em>git difftool</em> works with a file compare tool on your system, making the output much easier (for me at least) to deal with. 
+On my system, which is OS X, because I have the Apple Developer Tools installed, when I issue the <em>git difftool</em> the output is sent to <em>opendiff</em>,
+which in turn uses <em>FileMerge</em> which is a nice, graphical file compare and merge tool. Other than installing the developer tools, which I did long before
+I started using Git, I didn't have to do any other setup. I honestly have no idea how easy it is to set up a graphical compare tool to work
+with <em>git difftool</em> on a Windows or Linux box, but I'm guessing it cannot be that difficult.</p>
+<h3>Using Git Difftool</h3>
+<p>To start a compare, you simply issue the <em>git difftool</em> command and pass it paths to two sets of files. 
+The paths look like <em>branchName</em>:<em>path</em>. So if I wanted to compare the file <em>ValidationFactory.cfc</em> from the <em>master</em> branch
+to the same file in the <em>newStuff</em> branch, I'd type: <pre>git diff master:ValidationFactory.cfc newBranch:ValidationFactory.cfc</pre></p>
+<p>I'd see a prompt that says something like:
+<code>merge tool candidates: opendiff kdiff3 tkdiff xxdiff meld kompare gvimdiff diffuse ecmerge araxis emerge vimdiff
+Viewing: 'master:ValidationFactory.cfc'
+Hit return to launch 'opendiff':</code></p>
+<p>And when I hit return FileMerge would open up with both files displayed. If I want to compare an entire folder, I can just type
+<pre>git diff master:ValidateThis/core/ newBranch:ValidateThis/core/</pre></p>
+<p>And then I receive that prompt for each individual file in turn.</p>
+<p>I still don't think this is anywhere near as good as what I had with Subclipse, and I'm guessing there are ways to configure it to make it even friendlier, 
+but for now it's much better than <em>git diff</em></p>
