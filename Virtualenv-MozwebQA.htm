@@ -1,18 +1,32 @@
-Setting Up PyCharm to Run MozWebQA Tests
+Getting Started with virtualenv and virtualenvwrapper in Python
 
-<p><a href="http://www.jetbrains.com/pycharm/" target="_blank">PyCharm</a> is a Python IDE, released by <a href="http://www.jetbrains.com/index.html" target="_blank">JetBrains</a>. I quite enjoy using it and, as I've recently started contributing some tests to Mozilla's <a href="https://quality.mozilla.org/teams/web-qa/" target="_blank">Web QA</a> department (mozwebqa), I wanted to use it to interactively debug some mozwebqa tests. This turned out to be a lot trickier than I had imagined, so I am documenting the steps to do so via this post.</p>
-<p>This post assumes you have a project open in PyCharm for one of the mozwebqa projects. I am going to use <a href="https://github.com/mozilla/marketplace-tests" target="_blank">marketplace-tests</a> for this example.As I am on a Mac the instructions and screen shots will be OS X specific, but I imagine they will translate pretty closely to Windows.</p>
-<p><strong>Step 1 - Configure py.test as your default test runner</strong></p>
-<p><ol>
-    <li>Open up the <em>Preferences...</em> dialog and choose <em>Python Integrated Tools</em> under <em>Project Settings</em>.</li>
-    <li>Choose <strong>py.test</strong> as the <em>Default test runner.</em></li>
-    <li>Click <em>OK</em>.</li>
-</ol></p>
+<p>There are a couple of tools which can be extremely useful when developing with Python on your local system that I would encourage you to try. These are virtualenv and virtualenvwrapper, and this post will introduce you to them, including instructions for their installation and use.</p>
 
-<p><strong>Step 2 - Set default run configuration parameters for your project</strong></p>
-<p><ol>
-    <li>Type <strong>ctrl + alt + R</strong> to open the <em>Run</em> configuration selector.</li>
-    <li>Type <strong>0</strong>, or choose the first option (<em>Edit configurations...</em>) from the select list.</li>
+<p><strong>What is virtualenv?</strong></p>
+<p><a href="http://pypi.python.org/pypi/virtualenv">virtualenv</a> is a tool that allows you to create isolated Python environments, which can be quite helpful when you have different projects with differing requirements. As this is the case with many Mozilla Web QA projects it can be indispensible when working on those.</p>
+
+<p><strong>What is virtualenvwrapper?</strong></p>
+<p><a href="http://www.doughellmann.com/docs/virtualenvwrapper/index.html">virtualenvwrapper</a> is just that, a wrapper utility around virtualenv that makes it even easier to work with. I admit that I have never used virtualenv without virtualenvwrapper, and I do not intend to. For that reason this post will only cover working with virtualenv via virtualenvwrapper. Note also that virtualenvwrapper is a set of shell functions that are guaranteed to work in the following shells:
+    <ul>
+        <li>bash</li>
+        <li>ksh</li>
+        <li>zsh</li>
+    </ul>
+</p>
+<p>It may run under other shells, and there is a Windows version available called <a href="http://pypi.python.org/pypi/virtualenvwrapper-win">virtualenvwrapper-win</a></p>
+
+<p><strong>Installation</strong></p>
+<p>Both virtualenv and virtualenvwrapper can be installed via pip. Install virtualenv first and then virtualenvwrapper. Use the following commands to install them:
+<code>pip install virtualenv
+pip install virtualenvwrapper</code></p>
+
+<p><strong>Configuration</strong></p>
+<p>In order to use virtualenvwrapper you should add two lines to your shell startup file (e.g., .bash_profile):
+<code>export WORKON_HOME=$HOME/.virtualenvs
+source /usr/local/bin/virtualenvwrapper.sh</code></p>
+<p>The first line tells virtualenvwrapper where to store the virtualenvs that will be created and used. The example above stores them in a folder called <em>.virtualenvs</em> inside your home folder. The first line runs the shell script to set up the virtualenvwrapper commands and should point to the location where virtualenvwrapper was installed.</p>
+
+<li>Type <strong>0</strong>, or choose the first option (<em>Edit configurations...</em>) from the select list.</li>
     <li>In the <em>Run</em> dialog, expand <em>Defaults > Python's test</em> and click on<em>py.test</em>.</li>
     <li>Make sure the Python interpreter that you want to use for this project is selected for <em>Python interpreter</em>.
     If you are using virtualenv you may have to configure a new Python interpreter for your virtualenv. More on that in a separate post.</li>
