@@ -41,4 +41,19 @@ pip install -Ur requirements.txt</code></p>
 <p>The first line will create and activate a new virtual environment for marketplace-tests, while the second line will install all of the required packages into this virtual environment. Now, whenever you want to work on marketplace-tests you can simply type the command:
 <code>workon marketplace-tests</code></p>
 
+<p><strong>Using virtualenv and PyCharm</strong></p>
+<p>The instructions above are specific to using virtualenv when running Python from the command line. You can also use your virtual environments when running and debugging Python code from within PyCharm. First you have to add your virtual environments to PyCharm's list of Python interpreters:
+<ol>
+    <li>Open the <em>Preferences</em> (<em>Settings</em> on Windows) dialog and choose <strong>Project Interpreter</strong>.</li>
+    <li>Click on the <strong>Configure Interpreters</strong> link, which will open up the <em>Python Interpreters</em> dialog. Here you will see all of the interpreters currently configured for PyCharm.</li>
+    <li>Click the <strong>+</strong> button at the bottom of the list and choose the path to the interpreter in your virtual environment. In my experience sometimes PyCharm is able to find and list these automatically, and other times you have to choose the <strong>Local...</strong> item and browse for the path yourself. After choosing the path PyCharm will do some setup, displaying a progress indicator and will finally ask you whether you want to <em>set this interpreter as Project Interpreter?</em> Generally you are adding an interpreter precisely because you <em>do</em> want to set it as the interpreter for the current project, in which case you would answer <strong>Yes</strong>.</li>
+    <li>Your interpreter will now appear in the list of Python interpreters.</li>
+</ol></p>
+<p>If ever you want to change the interpreter for a given project just access the <em>Project Interpreter</em> dialog again and simply select a different interpreter from the <em>Project Interpreter</em> select list. This option is even available to be changed for individual run configurations, as described in the previous post on <a href="http://www.silverwareconsulting.com/index.cfm/2012/7/13/Setting-Up-PyCharm-to-Run-MozWebQA-Tests">Setting Up PyCharm to Run MozWebQA Tests</a>:
+<ol>
+    <li>Type <strong>ctrl + alt + R</strong> to open the <em>Run</em> configuration selector.</li>
+    <li>Type <strong>0</strong>, or choose the first option (<em>Edit configurations...</em>) from the select list.</li>
+    <li>In the <em>Run</em> dialog, beside <em>Interpreter > Python Interpreter</em>, choose your interpreter from the list.</li>
+    <li>Click <strong>Run</strong>.</li>
+</ol></p>
 
