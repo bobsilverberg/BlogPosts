@@ -1,46 +1,38 @@
-Getting Started with virtualenv and virtualenvwrapper in Python
-
 <p>There are a couple of tools which can be extremely useful when developing with Python on your local system that I would encourage you to try. These are virtualenv and virtualenvwrapper, and this post will introduce you to them, including instructions for their installation and use.</p>
-
 <p><strong>What is virtualenv?</strong></p>
-<p><a href="http://pypi.python.org/pypi/virtualenv">virtualenv</a> is a tool that allows you to create isolated Python environments, which can be quite helpful when you have different projects with differing requirements. As this is the case with many Mozilla Web QA projects it can be indispensible when working on those.</p>
-
+<p><a href="http://pypi.python.org/pypi/virtualenv">virtualenv</a> is a tool that allows you to create isolated Python environments, which can be quite helpful when you have different projects with differing requirements. As this is the case with many Mozilla Web QA projects it can be indispensable when working on those.</p>
 <p><strong>What is virtualenvwrapper?</strong></p>
 <p><a href="http://www.doughellmann.com/docs/virtualenvwrapper/index.html">virtualenvwrapper</a> is just that, a wrapper utility around virtualenv that makes it even easier to work with. I admit that I have never used virtualenv without virtualenvwrapper, and I do not intend to. For that reason this post will only cover working with virtualenv via virtualenvwrapper. Note also that virtualenvwrapper is a set of shell functions that are guaranteed to work in the following shells:
-    <ul>
-        <li>bash</li>
-        <li>ksh</li>
-        <li>zsh</li>
-    </ul>
+<ul>
+    <li>bash</li>
+    <li>ksh</li>
+    <li>zsh</li>
+</ul>
 </p>
 <p>It may run under other shells, and there is a Windows version available called <a href="http://pypi.python.org/pypi/virtualenvwrapper-win">virtualenvwrapper-win</a></p>
-
 <p><strong>Installation</strong></p>
 <p>Both virtualenv and virtualenvwrapper can be installed via pip. Install virtualenv first and then virtualenvwrapper. Use the following commands to install them:
-<code>pip install virtualenv
-pip install virtualenvwrapper</code></p>
-
+    <code>pip install virtualenv
+        pip install virtualenvwrapper</code></p>
 <p><strong>Configuration</strong></p>
 <p>In order to use virtualenvwrapper you should add two lines to your shell startup file (e.g., .bash_profile):
-<code>export WORKON_HOME=$HOME/.virtualenvs
-source /usr/local/bin/virtualenvwrapper.sh</code></p>
+    <code>export WORKON_HOME=$HOME/.virtualenvs
+        source /usr/local/bin/virtualenvwrapper.sh</code></p>
 <p>The first line tells virtualenvwrapper where to store the virtualenvs that will be created and used. The example above stores them in a folder called <em>.virtualenvs</em> inside your home folder. The first line runs the shell script to set up the virtualenvwrapper commands and should point to the location where virtualenvwrapper was installed.</p>
-
 <p><strong>Using virtualenvwrapper to Manage and Work with Virtual Environments</strong></p>
 <p>There are a lot of commands available with virtualenvwrapper, all of which are <a href="http://www.doughellmann.com/docs/virtualenvwrapper/command_ref.html">well documented</a>. In my experience, the following are the commands you will use most often:
-    <ul>
-        <li><em>mkvirtualenv</em> - used to create a new virtual environment. When you create a new environment it automatically becomes the active environment.</li>
-        <li><em>rmvirtualenv</em> - used to remove an existing virtual environment. The environment must be deactivated (see below) before it can be removed.</li>
-        <li><em>workon</em> - used to activate a virtual environment. Will also list all existing virtual environments if no argument is passed.</li>
-        <li><em>deactivate</em> - used to deactivate the currently active virtual environment. Note that <em>workon</em> will automatically deactivate the current environment before activating a new one.</li>
-    </ul>
+<ul>
+    <li><em>mkvirtualenv</em> - used to create a new virtual environment. When you create a new environment it automatically becomes the active environment.</li>
+    <li><em>rmvirtualenv</em> - used to remove an existing virtual environment. The environment must be deactivated (see below) before it can be removed.</li>
+    <li><em>workon</em> - used to activate a virtual environment. Will also list all existing virtual environments if no argument is passed.</li>
+    <li><em>deactivate</em> - used to deactivate the currently active virtual environment. Note that <em>workon</em> will automatically deactivate the current environment before activating a new one.</li>
+</ul>
 </p>
 <p>Here's an example of how one might use virtualenvwrapper to set up and configure a virtual environment for running tests for a <a href="https://quality.mozilla.org/teams/web-qa/">Mozilla Web QA</a> project (<a href="https://github.com/mozilla/marketplace-tests">marketplace-tests</a>). This code assumes that you already have the Git repo cloned to your local machine and you have navigated to the root folder of the project.
-<code>mkvirtualenv marketplace-tests
-pip install -Ur requirements.txt</code></p>
+    <code>mkvirtualenv marketplace-tests
+        pip install -Ur requirements.txt</code></p>
 <p>The first line will create and activate a new virtual environment for marketplace-tests, while the second line will install all of the required packages into this virtual environment. Now, whenever you want to work on marketplace-tests you can simply type the command:
-<code>workon marketplace-tests</code></p>
-
+    <code>workon marketplace-tests</code></p>
 <p><strong>Using virtualenv and PyCharm</strong></p>
 <p>The instructions above are specific to using virtualenv when running Python from the command line. You can also use your virtual environments when running and debugging Python code from within PyCharm. First you have to add your virtual environments to PyCharm's list of Python interpreters:
 <ol>
@@ -56,4 +48,3 @@ pip install -Ur requirements.txt</code></p>
     <li>In the <em>Run</em> dialog, beside <em>Interpreter > Python Interpreter</em>, choose your interpreter from the list.</li>
     <li>Click <strong>Run</strong>.</li>
 </ol></p>
-
