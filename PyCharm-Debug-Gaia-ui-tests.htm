@@ -1,0 +1,65 @@
+Debugging Gaia Tests with PyCharm
+
+<p>I've written about <a href="http://www.jetbrains.com/pycharm/" target="_blank">PyCharm</a> before.
+    I is my IDE of preference for Python, and I must admit it does an admirable job for html and Javascript as well.
+    I really like its interactive debugging features, which I use all the time when writing and, more often, fixing,
+    Web QA tests. As I have now started working on <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox_OS/Gaia">Gaia</a>
+    (the UI for <a href="http://www.mozilla.org/en-US/firefoxos/">Firefox OS</a>) tests as well I wanted to try to use
+    Pycharm to interactively debug them as well. I asked my colleague <a href="https://twitter.com/davehunt82">Dave Hunt</a>
+    to help me figure out how to do so during our work week in San Francisco and together we were able to come up with the
+    following solution:</p>
+<p>This post assumes you have the <a href="https://github.com/mozilla/gaia-ui-tests/">gaia-ui-tests project</a> open in PyCharm.</p>
+<p><strong>Step 1 - Create a Run/Debug Configuration for gaia-ui-tests</strong></p>
+<p><ol>
+    <li>Type <strong>ctrl + alt + R</strong> to open the <em>Run</em> configuration selector.</li>
+    <li>Type <strong>0</strong>, or choose the first option (<em>Edit configurations...</em>) from the select list.</li>
+    <li>Click the <em>+</em> sign to add a new configuration and choose <em>Python</em> from the dropdown.</li>
+    <li>In the <em>Run</em> dialog, enter the following values:
+        <ul>
+            <li><strong>Name:</strong> <em>gaia-ui-tests</em></li>
+            <li><strong>Script:</strong> <em>path/to/gaia-ui-tests/gaiatest/runtests.py</em></li>
+            <li><strong>Script parameters:</strong> <em>--address=localhost:2828 --testvars=path/to/b2g.gaia.json gaiatest/tests/test_to_run.py</em></li>
+            <li><strong>Python interpreter:</strong> <em>The interpreter to use for this project. This will likely point to a
+                <a href="http://www.silverwareconsulting.com/index.cfm/2012/7/24/Getting-Started-with-virtualenv-and-virtualenvwrapper-in-Python">virtualenv</a>.</em></li>
+            <li><strong>Working directory:</strong> <em>path/to/gaia-ui-tests</em></li>
+            <li>Make sure the <strong>Show settings</strong> checkbox is checked. This will allow you to change the name of the test whenever you run one.</li>
+        </ul>
+    </li>
+    <li>Click <em>Apply</em>, then <em>Close</em>.</li>
+</ol></p>
+
+<p><strong>Step 2 - Debug a test</strong></p>
+<p>You should notice a dropdown around the middle of the toolbar that has the PyCharm logo on the left and says <em>gaia-ui-tests</em>.
+    To the right of this is a green right-pointing arrow and to the right of that is a bug symbol with a blue pointing arrow.
+    You can now run a test by clicking the green arrow or debug a test by clicking the bug symbol.
+    Because you checked the <em>Show settings</em> checkbox on the configuration, the dialog will pop up allowing you to edit the
+    configuration before launching the run or debug session. When that happens, the only thing you need to change is the name of the test
+    file that you wish to run, which is the last thing that you added to the <em>Script parameters:</em> field.
+    Change that and click <em>Debug</em> (or <em>Run</em> as the case may be), and you'll be off to the races.
+
+<p><strong>Step 3 (Optional) - Have adb forward run automatically before any test</strong></p>
+<p>When testing with a real device, you need to make sure that Marionette can communicate with the device via port 2828, so you need to
+    have forwarded that port at least once after connecting or rebooting a device before you can run a test. We came up with a little trick
+    to have PyCharm do that for you. To do that, complete the following steps:
+    <ol>
+        <li>Type <strong>ctrl + alt + R</strong> to open the <em>Run</em> configuration selector.</li>
+        <li>Type <strong>0</strong>, or choose the first option (<em>Edit configurations...</em>) from the select list.</li>
+        <li>Choose the <em>gaia-ui-tests</em> configuration (which is likely already chosen), which should take you to the
+            now familiar <em>Run</em> configuration dialog.</li>
+        <li>Underneath the empty box that says <em>There are no tasks to run before launch</em> click the <em>+</em> sign and
+            choose <em>Run External tool</em>.</li>
+        <li>You should see an empty <em>External tools</em> dialog. Click the <em>+</em> sign to add a new tool.</li>
+        <li>In the <em>Edit Tool</em> dialog, enter the following values:
+            <ul>
+                <li><strong>Name:</strong> <em>adb forward</em></li>
+                <li><strong>Group:</strong> <em>adb</em></li>
+                <li><strong>Description:</strong> <em>Android Debug Bridge forward</em></li>
+                <li><strong>Program:</strong> <em>path/to/androidsdk/sdk/platform-tools/adb</em></li>
+                <li><strong>Parameters:</strong> <em>forward tcp:2828 tcp:2828</em></li>
+            </ul>
+        </li>
+        <li>Click <em>OK</em>, then <em>OK</em>, then <em>Apply</em>, then <em>Close</em>.</li>
+    </ol>
+</p>
+<p>That should be all you need to run and debug gaia-ui-tests from within PyCharm. If you run into any problems with this please feel
+free to leave me a comment below.</p>
