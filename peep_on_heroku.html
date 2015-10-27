@@ -1,0 +1,9 @@
+I recently moved a Django app to Heroku which was using <code><a href="https://github.com/erikrose/peep">peep</a></code>, rather than <code>pip</code>, for package installation. By default Heroku will use pip to install your required packages when it sees a <code>requirements.txt</code> file in the root of your project, and the option to use peep instead does not exist.
+
+Luckily one of my colleagues, <a href="https://mozillians.org/u/pmac/">pmac</a>, was kind enough to create a share a <a href="https://github.com/pmclanahan/heroku-buildpack-python-peep">Heroku buildpack</a> which uses peep instead of pip for package installation. All you need to do to make use of this buildpack is issue the following command using the Heroku CLI for your app:
+
+<code>heroku buildpacks:set https://github.com/pmclanahan/heroku-buildpack-python-peep</code>
+
+Of course, make sure your <code>requirements.txt</code> is peep-compatible.
+
+Happy peeping!

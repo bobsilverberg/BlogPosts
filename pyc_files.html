@@ -1,0 +1,29 @@
+I recently acquired a new development laptop and moved a number of local Git repositories from my old machine to my new machine. In doing so I also changed the folder structure, and when trying to run some code I was presented with this Python error:
+
+<code>
+import file mismatch:
+imported module 'tests.desktop.consumer_pages.test_details_page' has this __file__ attribute:
+/Users/bsilverberg/gitRepos/marketplace-tests/tests/desktop/consumer_pages/test_details_page.py
+which is not the same as the test file we want to collect:
+/Users/bsilverberg/Documents/gitRepos/marketplace-tests/tests/desktop/consumer_pages/test_details_page.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+</code>
+
+This was a symptom of the fact that Python creates <code>.pyc</code> files on my machine when it compiles code. This can result in other nastiness too, as well as cluttering up your machine, so I wanted to both delete all of these files and also prevent Python from doing it in the future. This post contains info on how to do both.
+
+<h3>Deleting all .pyc files from a folder</h3>
+
+You can use the <code>find</code> command (on OS X and Linux) to locate all of the <code>.pyc</code> files, and then use its <code>delete</code> option to delete them.
+
+The command to find all <code>.pyc</code> files in all folders, starting with the current one is:
+<code>find . -name '*.pyc'</code>
+
+If you want to delete all the files found, just add the <code>-delete</code> option:
+<code>find . -name '*.pyc' -delete</code>
+
+Obviously, this can be used for any file type that you wish to eradicate, not just <code>.pyc</code> files.
+
+<h3>Preventing Python from writing .pyc files</h3>
+
+To do this all you have to do is set the environment variable <code>PYTHONDONTWRITEBYTECODE</code> to <code>1</code>. You can ensure that that variable is set for any bash session that you start by adding the following to your <code>.bash_profile</code> or <code>.bashrc</code>:
+<code>export PYTHONDONTWRITEBYTECODE=1</code>
